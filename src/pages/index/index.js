@@ -5,10 +5,15 @@ import './index.scss'
 export default class Index extends Component {
 
   config = {
-    navigationBarTitleText: '首页'
+    navigationBarTitleText: '首页',
+    disableScroll: true
   }
 
-  componentWillMount () { }
+  componentWillMount () {
+    Taro.redirectTo({
+      url: '/pages/mapPage/mapPage'
+    })
+  }
 
   componentDidMount () { }
 
