@@ -1,14 +1,18 @@
 import Taro, { Component } from '@tarojs/taro'
-import { View, Text } from '@tarojs/components'
+import { View, Text, ScrollView, Block } from '@tarojs/components'
+import './mapPage.scss';
 
 export default class mapPage extends Component {
 
   constructor(props){
     super(props)
     this.state = { 
-      curTypeId: 0,  //the current selected place type
+      curTypeId: 2,  //the current selected place type
+      detailDisplay: 1, //the detail for a type of place should be displayed or not
+      placeNum: 0,  //the number of curType of place
+      curTypePlaces: [], //an array of the selected place
       placeTypes: [], //an array of all types {id: , type: }
-      places: new Map()//key: id, value: array of places
+      places: new Map(),//key: id, value: array of places
       /**********PLACE INSTANCE
        *   "Id": 17,
             "Title": "北京邮电大学沙河校区雁北园男生宿舍",
@@ -30,6 +34,25 @@ export default class mapPage extends Component {
     disableScroll: true
   }
 
+  setCurTypePlaces() {
+    //把下方列表需要渲染的部分装入curTypePlaces[]
+    console.log(this.state.curTypePlaces)
+  }
+
+
+  placeTypeSelect() {
+    
+  }
+
+  displayRev() {
+    //reverse this.state.detailDisplay
+    var temp = this.state.detailDisplay;
+    temp = (temp + 1) % 2;
+    this.setState({
+      detailDisplay: temp
+    })
+  }
+
   componentWillMount () {
       Taro.request({
         url: 'http://139.199.26.178:8000/v1/placetype/',
@@ -48,8 +71,8 @@ export default class mapPage extends Component {
                 }
             }
             this.setState({curTypeId: tPlaceTypes[0].id}) //
-            this.setState({placeTypes: tPlaceTypes},()=>{console.log(this.state.placeTypes)})
-            this.setState({places: tPlaces},()=>{console.log(this.state.places)})
+            this.setState({placeTypes: tPlaceTypes},()=>{console.log(this.state.placeTypes)}) //place name and id
+            this.setState({places: tPlaces},()=>{console.log(this.state.places)}) //place detail in index 
         })
         this.mpContext = wx.createMapContext('map')
     }
@@ -83,11 +106,43 @@ export default class mapPage extends Component {
   render () {
     return (
       <View>
-        <Text>TEST!</Text>
-        <Map 
-          id='map'
-          style='width: 100%; height: 400px;'
-        />
+        <View className="topBar">
+          <View className="campusSelect">沙河校区</View>
+          <View className="placeSelect">
+            <ScrollView scrollX="true">
+              <View className="placeTypes">
+                {this.state.placeTypes.map(type => {
+                  return(
+                    <View className="notSelectedPlaceTitle" onClick={this.placeTypeSelect} key="type">{type.type}</View>
+                  )
+                })}
+              </View>
+            </ScrollView>         
+          </View>
+        </View>
+
+        {(detailDisplay == 1) && (<Map id='map' style='width: 100%; height:48vh'/>)}
+        {(detailDisplay == 0) && (<Map id='map' style='width: 100%; height:88vh'/>)}         
+        {(detailDisplay == 1) && (<View className="displaySelect" onClick={this.displayRev}>共有{this.state.placeNum}个 ∨</View>)}
+        {(detailDisplay == 0) && (<View className="displaySelect" onClick={this.displayRev}>共有{this.state.placeNum}个 ∧</View>)}
+        {(detailDisplay == 1) &&
+        (<View className="placeDetail">
+            <ScrollView>
+              <View className="placeDetail">
+
+                {this.state.curTypePlaces.map(detail => {
+                      return(
+                        <View className="detailGroup">
+                          <View className="placePic"></View>
+                          <Image className="placePic" src={detail.Picture}/>
+                          <View className="placetitle">{detail.Title}</View>
+                        </View>
+                      )
+                    })}
+
+              </View>
+            </ScrollView>  
+        </View>)}
       </View>
     )
   }
