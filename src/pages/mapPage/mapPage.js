@@ -36,12 +36,14 @@ export default class mapPage extends Component {
 
   setCurTypePlaces() {
     //把下方列表需要渲染的部分装入curTypePlaces[]
-    console.log(this.state.curTypePlaces)
+    this.setState({curTypePlaces: this.state.places.get(this.state.curTypeId)},()=>{
+      this.setState({placeNum: this.state.curTypePlaces.length})
+      console.log(this.state.curTypePlaces)})
   }
 
 
-  placeTypeSelect() {
-    
+  placeTypeSelect(e) {
+    this.setState({curTypeId: parseInt(e.currentTarget.id)},()=>{this.setCurTypePlaces()})
   }
 
   displayRev() {
@@ -72,7 +74,10 @@ export default class mapPage extends Component {
             }
             this.setState({curTypeId: tPlaceTypes[0].id}) //
             this.setState({placeTypes: tPlaceTypes},()=>{console.log(this.state.placeTypes)}) //place name and id
-            this.setState({places: tPlaces},()=>{console.log(this.state.places)}) //place detail in index 
+            this.setState({places: tPlaces},()=>{
+              console.log(this.state.places);
+              this.setCurTypePlaces();
+            }) //place detail in index 
         })
         this.mpContext = wx.createMapContext('map')
     }
@@ -96,10 +101,10 @@ export default class mapPage extends Component {
     console.log(loc)
   }
 
-  jumpToDetail(id)// call this method when select a place from the list to show details
+  jumpToDetail(e)// call this method when select a place from the list to show details
   {
     Taro.navigateTo({
-      url: '/pages/detailPage/detailPage?id='+id
+      url: '/pages/detailPage/detailPage?id='+parseInt(e.currentTarget.id)
     })
   }
 
@@ -113,7 +118,7 @@ export default class mapPage extends Component {
               <View className="placeTypes">
                 {this.state.placeTypes.map(type => {
                   return(
-                    <View className="notSelectedPlaceTitle" onClick={this.placeTypeSelect} key="type">{type.type}</View>
+                    <View className="notSelectedPlaceTitle" id={type.id+"type"} onClick={this.placeTypeSelect} key="type">{type.type}</View>
                   )
                 })}
               </View>
@@ -132,7 +137,7 @@ export default class mapPage extends Component {
 
                 {this.state.curTypePlaces.map(detail => {
                       return(
-                        <View className="detailGroup">
+                        <View className="detailGroup" id={detail.Id+"place"} onClick={this.jumpToDetail}>
                           <View className="placePic"></View>
                           <Image className="placePic" src={detail.Picture}/>
                           <View className="placetitle">{detail.Title}</View>
