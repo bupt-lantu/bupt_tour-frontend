@@ -13,6 +13,7 @@ export default class mapPage extends Component {
       curTypePlaces: [], //an array of the selected place
       placeTypes: [], //an array of all types {id: , type: }
       places: new Map(),//key: id, value: array of places
+      placeMarkers: []
       /**********PLACE INSTANCE
        *   "Id": 17,
             "Title": "北京邮电大学沙河校区雁北园男生宿舍",
@@ -36,7 +37,18 @@ export default class mapPage extends Component {
 
   setCurTypePlaces() {
     //把下方列表需要渲染的部分装入curTypePlaces[]
+
     this.setState({curTypePlaces: this.state.places.get(this.state.curTypeId)},()=>{
+      let tempMarkers = []
+      for(let mk in this.state.curTypePlaces){
+        tempMarkers.push({
+          id: mk,
+          iconPath: 'https://i.loli.net/2019/05/03/5ccc3a422c0ef.png',
+          latitude: 40.22077,//mk.Longitude,
+          longitude: 116.23128//mk.Latitude
+        })
+      }
+      this.setState({placeMarkers: tempMarkers},()=>{console.log(this.state.placeMarkers)})
       this.setState({placeNum: this.state.curTypePlaces.length})
       console.log(this.state.curTypePlaces)})
   }
@@ -89,6 +101,7 @@ export default class mapPage extends Component {
     this.mpContext.markers = markers;
     */
     wx.getLocation({success: this.showLocation.bind(this)})
+    this.mpContext.moveToLocation()
   }
 
   componentWillUnmount () { }
@@ -105,6 +118,14 @@ export default class mapPage extends Component {
   {
     Taro.navigateTo({
       url: '/pages/detailPage/detailPage?id='+parseInt(e.currentTarget.id)
+    })
+  }
+
+  onMarkSelected(e){
+    console.log(e)
+    wx.openLocation({
+      latitude: 40.22077,//mk.Longitude,
+      longitude: 116.23128//mk.Latitude
     })
   }
 
@@ -125,9 +146,9 @@ export default class mapPage extends Component {
             </ScrollView>         
           </View>
         </View>
-
-        {(detailDisplay == 1) && (<Map id='map' style='width: 100%; height:48vh'/>)}
-        {(detailDisplay == 0) && (<Map id='map' style='width: 100%; height:88vh'/>)}         
+        
+        {(detailDisplay == 1) && (<Map id='map' show-location markers={this.state.placeMarkers} onmarkertap={this.onMarkSelected} style='width: 100%; height:48vh'/>)}
+        {(detailDisplay == 0) && (<Map id='map' show-location markers={this.state.placeMarkers} onmarkertap={this.onMarkSelected} style='width: 100%; height:88vh'/>)}         
         {(detailDisplay == 1) && (<View className="displaySelect" onClick={this.displayRev}>共有{this.state.placeNum}个 ∨</View>)}
         {(detailDisplay == 0) && (<View className="displaySelect" onClick={this.displayRev}>共有{this.state.placeNum}个 ∧</View>)}
         {(detailDisplay == 1) &&
