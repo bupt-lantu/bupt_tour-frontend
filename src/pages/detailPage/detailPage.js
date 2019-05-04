@@ -1,8 +1,14 @@
 import Taro, { Component } from '@tarojs/taro'
-import { View, Text } from '@tarojs/components'
+import { View, Text, Image} from '@tarojs/components'
 
 export default class detailPage extends Component {
 
+  state = {
+    placePicSource: "",
+    placeTitle: "",
+    placeDiscription: ""
+  }
+ 
   config = {
     navigationBarTitleText: '地点',
     disableScroll: true
@@ -21,6 +27,12 @@ export default class detailPage extends Component {
       })
        .then((res)=>{
            console.log(res)
+          //  console.log(res.data.Picture)
+           this.setState({
+            placePicSource: res.data.Picture,
+            placeTitle: res.data.Title,
+            placeDiscription: res.data.Desc,
+           })
        })
   }
 
@@ -35,6 +47,11 @@ export default class detailPage extends Component {
   render () {
     return (
       <View>
+        <Image className="placePicture" src={placePicSource}/>
+        <View className="titleGroup">
+          <View className="title">{placeTitle}</View>
+        </View>
+        <View className="placeDiscription">{placeDiscription}</View>
       </View>
     )
   }

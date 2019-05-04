@@ -75,3 +75,30 @@
     border: 3px solid rgba(151, 151, 151, 0.3);
     box-shadow: 0 2px 3px rgba(151, 151, 151, 0.3);
 }
+
+.detailGroup{
+    display: flex;
+    flex-direction: row;
+    padding: 2%;
+    border-bottom: 2px solid lightgray;
+}
+
+.placePicHolder{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 30%;
+}
+
+.placePic{
+    width: 25vw;
+    height: 10vh;
+}
+
+.placeTitle{
+    width: 70%;
+    padding: 5%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

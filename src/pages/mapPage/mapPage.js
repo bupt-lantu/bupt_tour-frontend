@@ -159,9 +159,10 @@ export default class mapPage extends Component {
                 {this.state.curTypePlaces.map(detail => {
                       return(
                         <View className="detailGroup" id={detail.Id+"place"} onClick={this.jumpToDetail}>
-                          <View className="placePic"></View>
-                          <Image className="placePic" src={detail.Picture}/>
-                          <View className="placetitle">{detail.Title}</View>
+                          <View className="placePicHolder">
+                            <Image className="placePic" src={detail.Picture}/>
+                          </View>
+                          <View className="placeTitle">{detail.Title}</View>
                         </View>
                       )
                     })}

@@ -1,0 +1,25 @@
+.placePicture{
+    width: 100%;
+    height: 35vh;
+}
+
+.titleGroup{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 4%;
+    height: 5vh;
+}
+
+.title{
+    width: 80%;
+    font-size: 40px;
+    color: rgb(0, 154, 206);  
+}
+
+.placeDiscription{
+    background-color: rgba(235, 235, 235, 0.3);
+    padding: 5%;
+    font-size: 28px;
+    height: 60vh;
+}
