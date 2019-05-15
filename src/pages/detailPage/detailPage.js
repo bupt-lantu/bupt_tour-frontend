@@ -1,5 +1,5 @@
 import Taro, { Component } from '@tarojs/taro'
-import { View, Text, Image} from '@tarojs/components'
+import { View, Text, Image, Audio} from '@tarojs/components'
 
 export default class detailPage extends Component {
 
@@ -29,6 +29,7 @@ export default class detailPage extends Component {
            console.log(res)
           //  console.log(res.data.Picture)
            this.setState({
+            placeSound: res.data.Video,
             placePicSource: res.data.Picture,
             placeTitle: res.data.Title,
             placeDiscription: res.data.Desc,
@@ -49,6 +50,7 @@ export default class detailPage extends Component {
       <View>
         <Image className="placePicture" src={placePicSource}/>
         <View className="titleGroup">
+          {/* <Audio className="player" src={placeSound}/> */}
           <View className="title">{placeTitle}</View>
         </View>
         <View className="placeDiscription">{placeDiscription}</View>
