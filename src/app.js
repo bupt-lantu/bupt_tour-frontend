@@ -17,16 +17,17 @@ class App extends Component {
       'pages/mapPage/mapPage',
       'pages/detailPage/detailPage'
     ],
+    requiredBackgroundModes: ['audio'],
     window: {
       backgroundTextStyle: 'light',
-      navigationBarBackgroundColor: '#fff',
+      navigationBarBackgroundColor: '#00BFFF',
       navigationBarTitleText: 'WeChat',
       navigationBarTextStyle: 'black'
     },
     permission: {
       'scope.userLocation': {
         desc: '请求地理信息'
-      }
+      },
     }
   }
 
