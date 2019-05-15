@@ -17,6 +17,7 @@ class App extends Component {
       'pages/mapPage/mapPage',
       'pages/detailPage/detailPage'
     ],
+    requiredBackgroundModes: ['audio'],
     window: {
       backgroundTextStyle: 'light',
       navigationBarBackgroundColor: '#00BFFF',
@@ -26,7 +27,7 @@ class App extends Component {
     permission: {
       'scope.userLocation': {
         desc: '请求地理信息'
-      }
+      },
     }
   }
 

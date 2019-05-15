@@ -13,7 +13,8 @@ export default class mapPage extends Component {
       curTypePlaces: [], //an array of the selected place
       placeTypes: [], //an array of all types {id: , type: }
       places: new Map(),//key: id, value: array of places
-      placeMarkers: []
+      placeMarkers: [],
+      curDescrPlaceId: -1
       /**********PLACE INSTANCE
        *   "Id": 17,
             "Title": "北京邮电大学沙河校区雁北园男生宿舍",
@@ -44,8 +45,8 @@ export default class mapPage extends Component {
         tempMarkers.push({
           id: mk,
           iconPath: 'https://i.loli.net/2019/05/03/5ccc3a422c0ef.png',
-          latitude: 40.22077,//mk.Longitude,
-          longitude: 116.23128//mk.Latitude
+          latitude: this.state.curTypePlaces[mk].Latitude,//+0.062035,//40.22077,//mk.Longitude,
+          longitude: this.state.curTypePlaces[mk].Longitude//-0.0568//116.23128//mk.Latitude
         })
       }
       this.setState({placeMarkers: tempMarkers},()=>{console.log(this.state.placeMarkers)})
@@ -65,6 +66,39 @@ export default class mapPage extends Component {
     this.setState({
       detailDisplay: temp
     })
+  }
+
+  describePlaceNearBy()
+  {
+    wx.getLocation({type: 'gcj02', success: (loc)=>{
+      Taro.request({
+        url: 'http://139.199.26.178:8000/v1/place/match',
+        header: {
+          'accept': 'application/json',
+          'content-type': 'application/x-www-form-urlencoded'
+        },
+        data: {
+          longitude : loc.longitude,
+          latitude : loc.latitude
+        },
+        method: 'POST'
+      })
+        .then(res=>{
+          //console.log(res.data)
+          if(res.data.Id != this.state.curDescrPlaceId)
+          {
+            console.log("NEWPLACE",loc.longitude,loc.latitude)
+            if(Math.abs(res.data.Longitude-loc.longitude)<=0.0025 && Math.abs(res.data.Latitude-loc.latitude)<=0.0025)
+            {
+              console.log(res.data)
+              this.setState({curDescrPlaceId: res.data.Id})
+              Taro.getBackgroundAudioManager().title = res.data.Title
+              Taro.getBackgroundAudioManager().src = res.data.Video
+            }
+            else{this.setState({curDescrPlaceId: -1})}
+          }
+        })
+    }})
   }
 
   componentWillMount () {
@@ -102,9 +136,13 @@ export default class mapPage extends Component {
     */
     wx.getLocation({success: this.showLocation.bind(this)})
     this.mpContext.moveToLocation()
+    this.describePlaceNearBy()
+    this.descIntervalId = setInterval(this.describePlaceNearBy.bind(this),10000)
   }
 
-  componentWillUnmount () { }
+  componentWillUnmount () { 
+    clearInterval(this.descIntervalId)
+  }
 
   componentDidShow () { }
 
