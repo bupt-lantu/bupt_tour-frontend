@@ -44,7 +44,7 @@ export default class mapPage extends Component {
       for(let mk in this.state.curTypePlaces){
         tempMarkers.push({
           id: mk,
-          iconPath: 'https://i.loli.net/2019/05/03/5ccc3a422c0ef.png',
+          iconPath: this.state.curTypePlaces[mk].Id==this.state.curDescrPlaceId ? this.nearastMarkerSrc : this.normalMarkerSrc,
           latitude: this.state.curTypePlaces[mk].Latitude,//+0.062035,//40.22077,//mk.Longitude,
           longitude: this.state.curTypePlaces[mk].Longitude//-0.0568//116.23128//mk.Latitude
         })
@@ -94,14 +94,21 @@ export default class mapPage extends Component {
               this.setState({curDescrPlaceId: res.data.Id})
               Taro.getBackgroundAudioManager().title = res.data.Title
               Taro.getBackgroundAudioManager().src = res.data.Video
+              this.changeMarker(res.data.Id,this.nearastMarkerSrc)
             }
-            else{this.setState({curDescrPlaceId: -1})}
+            else
+            {
+              this.changeMarker(this.state.curDescrPlaceId,this.normalMarkerSrc)
+              this.setState({curDescrPlaceId: -1})
+            }
           }
         })
     }})
   }
 
   componentWillMount () {
+      this.normalMarkerSrc = 'https://i.loli.net/2019/05/03/5ccc3a422c0ef.png'
+      this.nearastMarkerSrc = 'http://pr18vapfw.bkt.clouddn.com/timg2.png'
       Taro.request({
         url: 'http://139.199.26.178:8000/v1/placetype/',
         header: {
@@ -158,7 +165,16 @@ export default class mapPage extends Component {
       url: '/pages/detailPage/detailPage?id='+parseInt(e.currentTarget.id)
     })
   }
-
+  changeMarker(id,src){
+    let tempmarkers = this.state.placeMarkers;
+    for(let marker of tempmarkers){
+      if(this.state.curTypePlaces[marker.id].Id==id){
+        marker.iconPath = src
+        break
+      }
+    }
+    this.setState({placeMarkers: tempmarkers})
+  }
   onMarkSelected(e){
     console.log(e)
     wx.openLocation({
