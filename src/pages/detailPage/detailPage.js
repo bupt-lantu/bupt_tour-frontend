@@ -6,7 +6,8 @@ export default class detailPage extends Component {
   state = {
     placePicSource: "",
     placeTitle: "",
-    placeDiscription: ""
+    placeDiscription: "",
+    placeSound: ""
   }
  
   config = {
@@ -14,10 +15,18 @@ export default class detailPage extends Component {
     disableScroll: true
   }
 
+  changeDiscAudioState() {
+    if(this.audioPlaying){
+      this.descAudioContext.pause()
+      this.audioPlaying = false
+    }else{
+      this.descAudioContext.play()
+      this.audioPlaying = true
+    }
+  }
+
   componentWillMount () {
-    console.log('OK');
     let id = this.$router.params.id
-    console.log(id)
     Taro.request({
         url: 'http://139.199.26.178:8000/v1/place/'+id,
         header: {
@@ -29,15 +38,19 @@ export default class detailPage extends Component {
            console.log(res)
           //  console.log(res.data.Picture)
            this.setState({
-            placeSound: res.data.Video,
             placePicSource: res.data.Picture,
             placeTitle: res.data.Title,
             placeDiscription: res.data.Desc,
+            placeSound: 'http://pr18vapfw.bkt.clouddn.com/'+res.data.Id+'.mp3',
            })
        })
   }
 
-  componentDidMount () { }
+  componentDidMount () { 
+    this.descAudioContext = wx.createAudioContext('descPlayer')
+    this.descAudioContext.src = this.state.placeSound
+    this.audioPlaying = false
+  }
 
   componentWillUnmount () { }
 
@@ -50,7 +63,16 @@ export default class detailPage extends Component {
       <View>
         <Image className="placePicture" src={placePicSource}/>
         <View className="titleGroup">
-          {/* <Audio className="player" src={placeSound}/> */}
+          <Audio
+            id = "descPlayer" 
+            //className="player" 
+            src={placeSound} 
+            controls={true}
+            name = {placeTitle}
+            author = "SZH233" 
+            poster = {placePicSource}
+            onClick={this.changeDiscAudioState} 
+          />
           <View className="title">{placeTitle}</View>
         </View>
         <View className="placeDiscription">{placeDiscription}</View>

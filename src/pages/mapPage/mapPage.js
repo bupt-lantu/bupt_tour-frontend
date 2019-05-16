@@ -91,9 +91,10 @@ export default class mapPage extends Component {
             if(Math.abs(res.data.Longitude-loc.longitude)<=0.0025 && Math.abs(res.data.Latitude-loc.latitude)<=0.0025)
             {
               console.log(res.data)
+              this.changeMarker(this.curDescrPlaceId,this.normalMarkerSrc)
               this.setState({curDescrPlaceId: res.data.Id})
               Taro.getBackgroundAudioManager().title = res.data.Title
-              Taro.getBackgroundAudioManager().src = res.data.Video
+              Taro.getBackgroundAudioManager().src = 'http://pr18vapfw.bkt.clouddn.com/'+res.data.Id+'.mp3'
               this.changeMarker(res.data.Id,this.nearastMarkerSrc)
             }
             else
@@ -143,8 +144,8 @@ export default class mapPage extends Component {
     */
     wx.getLocation({success: this.showLocation.bind(this)})
     this.mpContext.moveToLocation()
-    this.describePlaceNearBy()
-    this.descIntervalId = setInterval(this.describePlaceNearBy.bind(this),10000)
+    //this.describePlaceNearBy()
+    this.descIntervalId = setInterval(this.describePlaceNearBy.bind(this),5000)
   }
 
   componentWillUnmount () { 
