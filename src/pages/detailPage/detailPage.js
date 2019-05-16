@@ -63,19 +63,23 @@ export default class detailPage extends Component {
       <View>
         <Image className="placePicture" src={placePicSource}/>
         <View className="titleGroup">
-          <Audio
-            id = "descPlayer" 
-            //className="player" 
-            src={placeSound} 
-            controls={true}
-            name = {placeTitle}
-            author = "SZH233" 
-            poster = {placePicSource}
-            onClick={this.changeDiscAudioState} 
-          />
           <View className="title">{placeTitle}</View>
         </View>
-        <View className="placeDiscription">{placeDiscription}</View>
+        <View className="detail">
+          <View>
+            <Audio
+              id = "descPlayer" 
+              //className="player" 
+              src={placeSound} 
+              controls={true}
+              name = {placeTitle}
+              author = "SZH233" 
+              poster = {placePicSource}
+              onClick={this.changeDiscAudioState} 
+            />
+          </View>
+          <View className="placeDiscription">{placeDiscription}</View>
+        </View>
       </View>
     )
   }
