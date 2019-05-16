@@ -18,6 +18,17 @@
     color: rgb(0, 154, 206);  
 }
 
+.palyerCountainer{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.soundPlayer{
+    width: 90vw;
+    height: 10vh;
+}
+
 .detail{
     background-color: rgba(235, 235, 235, 0.3);
     padding: 7% 5% 5% 5%;
