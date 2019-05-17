@@ -95,6 +95,7 @@ export default class mapPage extends Component {
               this.setState({curDescrPlaceId: res.data.Id})
               Taro.getBackgroundAudioManager().title = res.data.Title
               Taro.getBackgroundAudioManager().src = 'http://pr18vapfw.bkt.clouddn.com/'+res.data.Id+'.mp3'
+              Taro.getBackgroundAudioManager().play()
               this.changeMarker(res.data.Id,this.nearastMarkerSrc)
             }
             else
@@ -170,6 +171,7 @@ export default class mapPage extends Component {
     let tempmarkers = this.state.placeMarkers;
     for(let marker of tempmarkers){
       if(this.state.curTypePlaces[marker.id].Id==id){
+        console.log("SZHSB",id,src)
         marker.iconPath = src
         break
       }
@@ -202,8 +204,8 @@ export default class mapPage extends Component {
           </View>
         </View>
         
-        {(detailDisplay == 1) && (<Map id='map' show-location markers={this.state.placeMarkers} onmarkertap={this.onMarkSelected} style='width: 100%; height:48vh'/>)}
-        {(detailDisplay == 0) && (<Map id='map' show-location markers={this.state.placeMarkers} onmarkertap={this.onMarkSelected} style='width: 100%; height:88vh'/>)}         
+        {(detailDisplay == 1) && (<Map latitude="40.22077" longitude="116.23128" id='map' show-location markers={this.state.placeMarkers} onmarkertap={this.onMarkSelected} style='width: 100%; height:48vh'/>)}
+        {(detailDisplay == 0) && (<Map latitude="40.22077" longitude="116.23128" id='map' show-location markers={this.state.placeMarkers} onmarkertap={this.onMarkSelected} style='width: 100%; height:88vh'/>)}         
         {(detailDisplay == 1) && (<View className="displaySelect" onClick={this.displayRev}>共有{this.state.placeNum}个 ∨</View>)}
         {(detailDisplay == 0) && (<View className="displaySelect" onClick={this.displayRev}>共有{this.state.placeNum}个 ∧</View>)}
         {(detailDisplay == 1) &&
