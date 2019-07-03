@@ -13,8 +13,9 @@ class App extends Component {
 
   config = {
     pages: [
-      'pages/index/index',
       'pages/mapPage/mapPage',
+      'pages/index/index',
+     
       'pages/detailPage/detailPage'
     ],
     requiredBackgroundModes: ['audio'],

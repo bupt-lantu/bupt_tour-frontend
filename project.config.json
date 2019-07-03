@@ -1,15 +1,27 @@
 {
 	"miniprogramRoot": "dist/",
-	"projectname": "bupt_tour-frontend",
-	"description": "frontend of the bupt-tour proj",
-	"appid": "touristappid",
+	"projectname": "buptTour",
+	"description": "",
+	"appid": "wx39a8058ff22e3ddf",
 	"setting": {
-		"urlCheck": true,
+		"urlCheck": false,
 		"es6": false,
 		"postcss": false,
 		"minified": false,
-		"newFeature": true
+		"newFeature": true,
+		"coverView": true,
+		"autoAudits": false,
+		"checkInvalidKey": true,
+		"checkSiteMap": true,
+		"uploadWithSourceMap": true,
+		"babelSetting": {
+			"ignore": [],
+			"disablePlugins": [],
+			"outputPath": ""
+		}
 	},
 	"compileType": "miniprogram",
+	"simulatorType": "wechat",
+	"simulatorPluginLibVersion": {},
 	"condition": {}
 }

@@ -7,6 +7,7 @@ export default class mapPage extends Component {
   constructor(props){
     super(props)
     this.state = { 
+      allPlace:[],
       curTypeId: 2,  //the current selected place type
       detailDisplay: 1, //the detail for a type of place should be displayed or not
       placeNum: 0,  //the number of curType of place
@@ -14,7 +15,9 @@ export default class mapPage extends Component {
       placeTypes: [], //an array of all types {id: , type: }
       places: new Map(),//key: id, value: array of places
       placeMarkers: [],
-      curDescrPlaceId: -1
+      curDescrPlaceId: -1,
+      latitude: 40.159113,
+      longitude:116.288179
       /**********PLACE INSTANCE
        *   "Id": 17,
             "Title": "北京邮电大学沙河校区雁北园男生宿舍",
@@ -51,7 +54,7 @@ export default class mapPage extends Component {
       }
       this.setState({placeMarkers: tempMarkers},()=>{console.log(this.state.placeMarkers)})
       this.setState({placeNum: this.state.curTypePlaces.length})
-      console.log(this.state.curTypePlaces)})
+    })
   }
 
 
@@ -60,7 +63,6 @@ export default class mapPage extends Component {
   }
 
   displayRev() {
-    //reverse this.state.detailDisplay
     var temp = this.state.detailDisplay;
     temp = (temp + 1) % 2;
     this.setState({
@@ -87,16 +89,27 @@ export default class mapPage extends Component {
           //console.log(res.data)
           if(res.data.Id != this.state.curDescrPlaceId)
           {
-            console.log("NEWPLACE",loc.longitude,loc.latitude)
             if(Math.abs(res.data.Longitude-loc.longitude)<=0.0025 && Math.abs(res.data.Latitude-loc.latitude)<=0.0025)
             {
-              console.log(res.data)
-              this.changeMarker(this.curDescrPlaceId,this.normalMarkerSrc)
-              this.setState({curDescrPlaceId: res.data.Id})
+              let tempMarkers = this.state.placeMarkers
+              console.log(123,tempMarkers)
+              for(let marker of tempMarkers) {
+                if(this.state.curTypePlaces[marker.id].Id == this.state.curDescrPlaceId) {
+                  marker.iconPath = this.normalMarkerSrc
+                }
+                else if(this.state.curTypePlaces[marker.id].Id == res.data.Id) {
+                  marker.iconPath = this.nearastMarkerSrc
+                }
+              }
+              // this.changeMarker(this.curDescrPlaceId,this.normalMarkerSrc)
+              this.setState({
+                curDescrPlaceId: res.data.Id,
+                placeMarkers: tempMarkers
+              })
               Taro.getBackgroundAudioManager().title = res.data.Title
-              Taro.getBackgroundAudioManager().src = 'http://pr18vapfw.bkt.clouddn.com/'+res.data.Id+'.mp3'
+              Taro.getBackgroundAudioManager().src = res.data.Video
               Taro.getBackgroundAudioManager().play()
-              this.changeMarker(res.data.Id,this.nearastMarkerSrc)
+              // this.changeMarker(res.data.Id,this.nearastMarkerSrc)
             }
             else
             {
@@ -110,7 +123,16 @@ export default class mapPage extends Component {
 
   componentWillMount () {
       this.normalMarkerSrc = 'https://i.loli.net/2019/05/03/5ccc3a422c0ef.png'
-      this.nearastMarkerSrc = 'http://pr18vapfw.bkt.clouddn.com/timg2.png'
+      this.nearastMarkerSrc = 'https://s2.ax1x.com/2019/07/03/ZtW5id.png'
+      Taro.request({
+        url: 'http://139.199.26.178:8000/v1/place/',
+        method: 'GET'
+      }).then(res =>  {
+        this.setState({
+          allPlace:res.data
+        })
+      });
+      
       Taro.request({
         url: 'http://139.199.26.178:8000/v1/placetype/',
         header: {
@@ -138,14 +160,10 @@ export default class mapPage extends Component {
     }
 
   componentDidMount () {
-    /*
-    let markers = [];
-    let curPlaces = this.state.places.get(this.state.curTypeId);
-    this.mpContext.markers = markers;
-    */
+    
+    console.log(this.state.allPlace,12321412421)
     wx.getLocation({success: this.showLocation.bind(this)})
     this.mpContext.moveToLocation()
-    //this.describePlaceNearBy()
     this.descIntervalId = setInterval(this.describePlaceNearBy.bind(this),5000)
   }
 
@@ -153,7 +171,9 @@ export default class mapPage extends Component {
     clearInterval(this.descIntervalId)
   }
 
-  componentDidShow () { }
+  componentDidShow () {
+    console.log(9999999)
+  }
 
   componentDidHide () { }
 
@@ -167,22 +187,42 @@ export default class mapPage extends Component {
       url: '/pages/detailPage/detailPage?id='+parseInt(e.currentTarget.id)
     })
   }
+
   changeMarker(id,src){
     let tempmarkers = this.state.placeMarkers;
     for(let marker of tempmarkers){
       if(this.state.curTypePlaces[marker.id].Id==id){
-        console.log("SZHSB",id,src)
+
         marker.iconPath = src
         break
       }
     }
     this.setState({placeMarkers: tempmarkers})
   }
+
+  //地图导航界面
   onMarkSelected(e){
-    console.log(e)
-    wx.openLocation({
-      latitude: 40.22077,//mk.Longitude,
-      longitude: 116.23128//mk.Latitude
+    console.log("hekafhkaje",e.detail.markerId)
+    let params = {
+      type:'gcj02',
+      latitude: 40.159113,
+      longitude:116.288179,
+      name:"test",
+      address:"detail"
+    }
+    for(let place of this.state.allPlace) {
+      console.log("aljf",place)
+      console.log("place.id",place.Id)
+      if(place.Id == e.detail.markerId) {
+        params.latitude = place.latitude
+        params.longitude = place.longitude
+        params.name = place.name
+        break
+      }
+    }
+    console.log(params)
+    Taro.openLocation(params).then((res) => {
+     console.log(res)
     })
   }
 
@@ -204,12 +244,9 @@ export default class mapPage extends Component {
           </View>
         </View>
         
-        {(detailDisplay == 1) && (<Map latitude="40.22077" longitude="116.23128" id='map' show-location markers={this.state.placeMarkers} onmarkertap={this.onMarkSelected} style='width: 100%; height:48vh'/>)}
-        {(detailDisplay == 0) && (<Map latitude="40.22077" longitude="116.23128" id='map' show-location markers={this.state.placeMarkers} onmarkertap={this.onMarkSelected} style='width: 100%; height:88vh'/>)}         
-        {(detailDisplay == 1) && (<View className="displaySelect" onClick={this.displayRev}>共有{this.state.placeNum}个 ∨</View>)}
-        {(detailDisplay == 0) && (<View className="displaySelect" onClick={this.displayRev}>共有{this.state.placeNum}个 ∧</View>)}
-        {(detailDisplay == 1) &&
-        (<View className="placeDetail">
+        <Map latitude={latitude} longitude={longitude} id='map' show-location markers={this.state.placeMarkers} onmarkertap={this.onMarkSelected} style='width: 100%; height:48vh'/>
+        <View className="displaySelect" onClick={this.displayRev}>共有{this.state.placeNum}个 </View>
+        <View className="placeDetail">
             <ScrollView>
               <View className="placeDetail">
 
@@ -226,7 +263,7 @@ export default class mapPage extends Component {
 
               </View>
             </ScrollView>  
-        </View>)}
+        </View>
       </View>
     )
   }
