@@ -1,12 +1,19 @@
 import Taro, { Component } from '@tarojs/taro'
-import { View, Text, ScrollView, Block } from '@tarojs/components'
+import { View, Text, ScrollView, Block, Button } from '@tarojs/components'
 import './mapPage.scss';
+import shouqi from '../../static/shouqi.png'
+import dakai from '../../static/dakai.png'
 
 export default class mapPage extends Component {
 
   constructor(props){
     super(props)
     this.state = { 
+      tests:"green",
+      toView:"place26",
+      windowHeight:"667",
+      bottomHeight:300,
+      topHeight:337,
       allPlace:[],
       curTypeId: 2,  //the current selected place type
       detailDisplay: 1, //the detail for a type of place should be displayed or not
@@ -18,24 +25,11 @@ export default class mapPage extends Component {
       curDescrPlaceId: -1,
       latitude: 40.159113,
       longitude:116.288179
-      /**********PLACE INSTANCE
-       *   "Id": 17,
-            "Title": "北京邮电大学沙河校区雁北园男生宿舍",
-            "Desc": "这是一个描述",
-            "Picture": "https://www.bupt.edu.cn/upload/image/201704/10%20%E5%AD%A6%E7%94%9F%E5%AE%BF%E8%88%8D.jpg",
-            "Video": "https://dwz.cn/bjnFx8Ed",
-            "Longitude": 40.158735,
-            "Latitude": 116.28808,
-            "PlaceType": {
-                "Id": 2,
-                "Type": "宿舍楼"
-             }
-       */
     }
   }
 
   config = {
-    navigationBarTitleText: '地图',
+    navigationBarTitleText: '大美沙河',
     disableScroll: true
   }
 
@@ -46,10 +40,13 @@ export default class mapPage extends Component {
       let tempMarkers = []
       for(let mk in this.state.curTypePlaces){
         tempMarkers.push({
+          Id:this.state.curTypePlaces[mk].Id,
           id: mk,
           iconPath: this.state.curTypePlaces[mk].Id==this.state.curDescrPlaceId ? this.nearastMarkerSrc : this.normalMarkerSrc,
-          latitude: this.state.curTypePlaces[mk].Latitude,//+0.062035,//40.22077,//mk.Longitude,
-          longitude: this.state.curTypePlaces[mk].Longitude//-0.0568//116.23128//mk.Latitude
+          latitude: this.state.curTypePlaces[mk].Latitude,
+          longitude: this.state.curTypePlaces[mk].Longitude,
+          width:"32.5px",
+          height:"37px"
         })
       }
       this.setState({placeMarkers: tempMarkers},()=>{console.log(this.state.placeMarkers)})
@@ -86,7 +83,6 @@ export default class mapPage extends Component {
         method: 'POST'
       })
         .then(res=>{
-          //console.log(res.data)
           if(res.data.Id != this.state.curDescrPlaceId)
           {
             if(Math.abs(res.data.Longitude-loc.longitude)<=0.0025 && Math.abs(res.data.Latitude-loc.latitude)<=0.0025)
@@ -96,12 +92,15 @@ export default class mapPage extends Component {
               for(let marker of tempMarkers) {
                 if(this.state.curTypePlaces[marker.id].Id == this.state.curDescrPlaceId) {
                   marker.iconPath = this.normalMarkerSrc
+                  marker.width = "32.5px"
+                  marker.height = "35px"
                 }
                 else if(this.state.curTypePlaces[marker.id].Id == res.data.Id) {
                   marker.iconPath = this.nearastMarkerSrc
+                  marker.width = "35px"
+                  marker.height = "37.5px"
                 }
               }
-              // this.changeMarker(this.curDescrPlaceId,this.normalMarkerSrc)
               this.setState({
                 curDescrPlaceId: res.data.Id,
                 placeMarkers: tempMarkers
@@ -109,7 +108,6 @@ export default class mapPage extends Component {
               Taro.getBackgroundAudioManager().title = res.data.Title
               Taro.getBackgroundAudioManager().src = res.data.Video
               Taro.getBackgroundAudioManager().play()
-              // this.changeMarker(res.data.Id,this.nearastMarkerSrc)
             }
             else
             {
@@ -122,8 +120,9 @@ export default class mapPage extends Component {
   }
 
   componentWillMount () {
-      this.normalMarkerSrc = 'https://i.loli.net/2019/05/03/5ccc3a422c0ef.png'
-      this.nearastMarkerSrc = 'https://s2.ax1x.com/2019/07/03/ZtW5id.png'
+
+      this.normalMarkerSrc = 'https://s2.ax1x.com/2019/07/04/ZUHKd1.png'
+      this.nearastMarkerSrc = 'https://s2.ax1x.com/2019/07/04/ZUOvHH.png'
       Taro.request({
         url: 'http://139.199.26.178:8000/v1/place/',
         method: 'GET'
@@ -160,8 +159,16 @@ export default class mapPage extends Component {
     }
 
   componentDidMount () {
-    
-    console.log(this.state.allPlace,12321412421)
+    Taro.getSystemInfo().then((res) => {
+      console.log(res)
+      let topheight = res.windowHeight * 0.6
+      let bottomheight = res.windowHeight * 0.4 - 35
+      this.setState({
+       windowHeight:res.windowHeight,
+       topHeight:topheight,
+       bottomHeight:bottomheight
+      },()=>{console.log(this.state.topHeight,this.state.bottomHeight)})
+    })
     wx.getLocation({success: this.showLocation.bind(this)})
     this.mpContext.moveToLocation()
     this.descIntervalId = setInterval(this.describePlaceNearBy.bind(this),5000)
@@ -172,7 +179,7 @@ export default class mapPage extends Component {
   }
 
   componentDidShow () {
-    console.log(9999999)
+    
   }
 
   componentDidHide () { }
@@ -202,57 +209,71 @@ export default class mapPage extends Component {
 
   //地图导航界面
   onMarkSelected(e){
-    console.log("hekafhkaje",e.detail.markerId)
-    let params = {
-      type:'gcj02',
-      latitude: 40.159113,
-      longitude:116.288179,
-      name:"test",
-      address:"detail"
-    }
-    for(let place of this.state.allPlace) {
-      console.log("aljf",place)
-      console.log("place.id",place.Id)
-      if(place.Id == e.detail.markerId) {
-        params.latitude = place.latitude
-        params.longitude = place.longitude
-        params.name = place.name
-        break
-      }
-    }
-    console.log(params)
-    Taro.openLocation(params).then((res) => {
-     console.log(res)
-    })
-  }
+    console.log("this.state.curTypePlaces",this.state.curTypePlaces)
+    console.log("event",e.detail["markerId"])
+    console.log("markers:",this.state.placeMarkers)
+    console.log("dshfksahkshk")
+    console.log("e.detail[markerId]:"+e.detail["markerId"])
+    console.log("id:"+this.state.placeMarkers[e.detail["markerId"]].Id)
+    this.setState({
+      toView:"place"+this.state.placeMarkers[e.detail["markerId"]].Id
+    },()=>{console.log(this.state.toView)})
+    // let params = {
+    //   type:'gcj02',
+    //   latitude: 40.159113,
+    //   longitude:116.288179,
+    //   name:"test",
+    //   address:"detail"
+    // }
+    // for(let place of this.state.allPlace) {
+    //   if(place.Id == e.detail.markerId) {
+    //     params.latitude = place.latitude
+    //     params.longitude = place.longitude
+    //     params.name = place.name
+    //     break
+    //   }
+    // }
+    // Taro.openLocation(params).then((res) => {
 
+    // })
+  }
+  test() {
+    this.setState({
+      tests:"yellow"
+    })
+    console.log(this.state.tests)
+  }
   render () {
     return (
-      <View>
-        <View className="topBar">
-          <View className="campusSelect">沙河校区</View>
-          <View className="placeSelect">
-            <ScrollView scrollX="true">
-              <View className="placeTypes">
-                {this.state.placeTypes.map(type => {
-                  return(
-                    <View className="notSelectedPlaceTitle" id={type.id+"type"} onClick={this.placeTypeSelect} key="type">{type.type}</View>
-                  )
-                })}
-              </View>
-            </ScrollView>         
-          </View>
-        </View>
-        
-        <Map latitude={latitude} longitude={longitude} id='map' show-location markers={this.state.placeMarkers} onmarkertap={this.onMarkSelected} style='width: 100%; height:48vh'/>
-        <View className="displaySelect" onClick={this.displayRev}>共有{this.state.placeNum}个 </View>
-        <View className="placeDetail">
-            <ScrollView>
-              <View className="placeDetail">
 
+      <View>
+        <View className="top">
+          <CoverView className="topBar" style={"height:"+topHeight+"px"}>
+            <CoverView className="campusSelect">
+              <CoverView className="campusDetail">
+                <CoverView>沙河校区</CoverView>
+                <CoverImage src={shouqi} className="shouqi"></CoverImage>  
+              </CoverView>
+            </CoverView>
+            <CoverView className="placeSelect"style={"height:"+topHeight+"px"}>
+              <ScrollView scrollY="true" >
+                <CoverView className="placeTypes">
+                  {this.state.placeTypes.map(type => {
+                    return(
+                      <CoverView className="notSelectedPlaceTitle" id={type.id+"type"} onClick={this.placeTypeSelect} key="type">{type.type}</View>
+                    )
+                  })}
+                </CoverView>
+              </ScrollView>         
+            </CoverView>
+          </CoverView>
+          <Map className="Map" latitude={latitude} longitude={longitude} id='map' show-location markers={this.state.placeMarkers} onmarkertap={this.onMarkSelected} style={"height:"+topHeight+"px"} />
+        </View>
+        <View className="displaySelect" onClick={this.displayRev}>共有{this.state.placeNum}个 </View>
+            <ScrollView scrollIntoView={toView} scrollY="true" style={"height:"+bottomHeight+"px"}>
                 {this.state.curTypePlaces.map(detail => {
                       return(
-                        <View className="detailGroup" id={detail.Id+"place"} onClick={this.jumpToDetail}>
+                        <View className="detailGroup" id={"place"+detail.Id} onClick={this.jumpToDetail}>
                           <View className="placePicHolder">
                             <Image className="placePic" src={detail.Picture}/>
                           </View>
@@ -260,11 +281,8 @@ export default class mapPage extends Component {
                         </View>
                       )
                     })}
-
-              </View>
             </ScrollView>  
         </View>
-      </View>
     )
   }
 }

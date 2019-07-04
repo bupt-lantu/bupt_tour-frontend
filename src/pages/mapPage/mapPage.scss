@@ -1,41 +1,57 @@
+.top {
+    
+}
 .topBar{
-    background-color: rgb(0, 191, 255);
-    display: flex;
-    flex-direction: row;
-    height: 6vh;
+    z-index:1000;
+    background-color: white;
+    height: 700px;
+    width:200px; 
 }   
 
 .campusSelect{
+    height:100px;
+    margin-left:10px;
     display: flex;
     justify-content: center;
-    align-items: center;
-    margin: 0px 30px 20px 30px;
-    padding: 10px 20px 10px 20px;
-    border-radius: 30px;
-    color: white;
-    font-size: 30px;
-    letter-spacing: 5px;
-    font-weight: bold;
-    background-color: rgba(255, 255, 255, 0.233);
-    width: 20vw;
-    position: fixed;    
+    align-items: center;  
 }
 
+.Map {
+    position:fixed;
+    width:100%;
+    top:0;
+    z-index: -100;
+}
+.campusDetail{
+    width:160px;
+    background-color: rgb(87,152,222);
+    border-radius: 20px;
+    color:white;
+    font-size: 35px;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.shouqi{
+    height:20px;
+    width:20px;
+}
 .placeSelect{
-    width: 80vw;
-    position: relative;
-    margin-left: 35vw;
-    padding: 10px 0 10px 0;
     display: flex;
-    flex-direction: row;
-    align-items: center;
+    flex-flow: column nowrap;
+    color:c;
+    // width: 80vw;
+    // position: relative;
+    // margin-left: 35vw;
+    // padding: 10px 0 10px 0;
+    // display: flex;
+    // flex-direction: row;
+    // align-items: center;
 }
 
-.placeTypes{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-}
+
 
 .notSelectedPlaceTitle{
     display: flex;
@@ -43,7 +59,7 @@
     align-items: center;
     margin: 0 10px 10px 10px;
     padding: 10px 0 5px 0;   
-    color: white;
+    color: rgb(87,152,222);
     font-size: 30px;
 }
 
@@ -71,7 +87,7 @@
     font-size: small;
     letter-spacing: 3px;
     padding: 10px;
-    height: 4vh;
+    height: 70px;
     color: rgb(0, 191, 255);
     border: 3px solid rgba(151, 151, 151, 0.3);
     box-shadow: 0 2px 3px rgba(151, 151, 151, 0.3);

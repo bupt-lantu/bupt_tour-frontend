@@ -21,9 +21,9 @@ class App extends Component {
     requiredBackgroundModes: ['audio'],
     window: {
       backgroundTextStyle: 'light',
-      navigationBarBackgroundColor: '#00BFFF',
+      navigationBarBackgroundColor: '#1564B8',
       navigationBarTitleText: 'WeChat',
-      navigationBarTextStyle: 'black'
+      navigationBarTextStyle: 'white'
     },
     permission: {
       'scope.userLocation': {
