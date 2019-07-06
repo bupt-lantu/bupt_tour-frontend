@@ -5,24 +5,29 @@
     z-index:1000;
     background-color: white;
     height: 700px;
-    width:200px; 
+    width:200px;
+ 
 }   
 
 .campusSelect{
     height:100px;
-    margin-left:10px;
+    left:0;
+    width:200px;
+    background-color: white;
     display: flex;
     justify-content: center;
     align-items: center;  
+    z-index:10000
 }
 
 .Map {
     position:fixed;
     width:100%;
     top:0;
-    z-index: -100;
+    
 }
 .campusDetail{
+    margin-top:-75px;
     width:160px;
     background-color: rgb(87,152,222);
     border-radius: 20px;
@@ -32,6 +37,7 @@
     flex-flow: row nowrap;
     justify-content: center;
     align-items: center;
+    z-index:1000;
 }
 
 .shouqi{
@@ -41,7 +47,7 @@
 .placeSelect{
     display: flex;
     flex-flow: column nowrap;
-    color:c;
+   
     // width: 80vw;
     // position: relative;
     // margin-left: 35vw;
@@ -51,7 +57,10 @@
     // align-items: center;
 }
 
-
+.notSelectedPlaceTitle{
+    height:80px;
+    border-bottom: 4px solid rgba(255, 255, 255, 0.8);
+}
 
 .notSelectedPlaceTitle{
     display: flex;
@@ -87,7 +96,7 @@
     font-size: small;
     letter-spacing: 3px;
     padding: 10px;
-    height: 70px;
+    height: 60px;
     color: rgb(0, 191, 255);
     border: 3px solid rgba(151, 151, 151, 0.3);
     box-shadow: 0 2px 3px rgba(151, 151, 151, 0.3);
@@ -96,26 +105,38 @@
 .detailGroup{
     display: flex;
     flex-direction: row;
-    padding: 2%;
+    height:160px;
+    align-items: center;
+    border-bottom: 2px solid lightgray;
+}
+
+.detailGroupActive{
+    display: flex;
+    background:#ebebeb;
+    color:#192688;
+    flex-direction: row;
+    height:160px;
+    align-items: center;
     border-bottom: 2px solid lightgray;
 }
 
 .placePicHolder{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 30%;
+   padding-left:30px;
 }
 
 .placePic{
-    width: 25vw;
-    height: 10vh;
+    width: 150px;
+    height: 105px;
 }
 
 .placeTitle{
-    width: 70%;
-    padding: 5%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+   padding-left:45px;
+   width:400px;
+   
+    
+}
+
+.navigationImage {
+    height:50px;
+    width:50px;
 }

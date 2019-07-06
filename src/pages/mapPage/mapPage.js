@@ -3,7 +3,7 @@ import { View, Text, ScrollView, Block, Button } from '@tarojs/components'
 import './mapPage.scss';
 import shouqi from '../../static/shouqi.png'
 import dakai from '../../static/dakai.png'
-
+import navigationImage from '../../static/navigationImage.png'
 export default class mapPage extends Component {
 
   constructor(props){
@@ -24,7 +24,10 @@ export default class mapPage extends Component {
       placeMarkers: [],
       curDescrPlaceId: -1,
       latitude: 40.159113,
-      longitude:116.288179
+      longitude:116.288179,
+      animationData:{},
+      close:false,
+      entryId:100000,
     }
   }
 
@@ -88,17 +91,16 @@ export default class mapPage extends Component {
             if(Math.abs(res.data.Longitude-loc.longitude)<=0.0025 && Math.abs(res.data.Latitude-loc.latitude)<=0.0025)
             {
               let tempMarkers = this.state.placeMarkers
-              console.log(123,tempMarkers)
               for(let marker of tempMarkers) {
                 if(this.state.curTypePlaces[marker.id].Id == this.state.curDescrPlaceId) {
                   marker.iconPath = this.normalMarkerSrc
                   marker.width = "32.5px"
-                  marker.height = "35px"
+                  marker.height = "37px"
                 }
                 else if(this.state.curTypePlaces[marker.id].Id == res.data.Id) {
                   marker.iconPath = this.nearastMarkerSrc
                   marker.width = "35px"
-                  marker.height = "37.5px"
+                  marker.height = "40px"
                 }
               }
               this.setState({
@@ -161,8 +163,8 @@ export default class mapPage extends Component {
   componentDidMount () {
     Taro.getSystemInfo().then((res) => {
       console.log(res)
-      let topheight = res.windowHeight * 0.6
-      let bottomheight = res.windowHeight * 0.4 - 35
+      let topheight = res.windowHeight * 0.7-50
+      let bottomheight = res.windowHeight * 0.3
       this.setState({
        windowHeight:res.windowHeight,
        topHeight:topheight,
@@ -177,9 +179,8 @@ export default class mapPage extends Component {
   componentWillUnmount () { 
     clearInterval(this.descIntervalId)
   }
-
   componentDidShow () {
-    
+   
   }
 
   componentDidHide () { }
@@ -209,75 +210,92 @@ export default class mapPage extends Component {
 
   //地图导航界面
   onMarkSelected(e){
-    console.log("this.state.curTypePlaces",this.state.curTypePlaces)
-    console.log("event",e.detail["markerId"])
-    console.log("markers:",this.state.placeMarkers)
-    console.log("dshfksahkshk")
-    console.log("e.detail[markerId]:"+e.detail["markerId"])
-    console.log("id:"+this.state.placeMarkers[e.detail["markerId"]].Id)
     this.setState({
-      toView:"place"+this.state.placeMarkers[e.detail["markerId"]].Id
-    },()=>{console.log(this.state.toView)})
-    // let params = {
-    //   type:'gcj02',
-    //   latitude: 40.159113,
-    //   longitude:116.288179,
-    //   name:"test",
-    //   address:"detail"
-    // }
-    // for(let place of this.state.allPlace) {
-    //   if(place.Id == e.detail.markerId) {
-    //     params.latitude = place.latitude
-    //     params.longitude = place.longitude
-    //     params.name = place.name
-    //     break
-    //   }
-    // }
-    // Taro.openLocation(params).then((res) => {
-
-    // })
-  }
-  test() {
-    this.setState({
-      tests:"yellow"
+      toView:"place"+this.state.placeMarkers[e.detail["markerId"]].Id,
+      entryId:e.detail["markerId"],
     })
-    console.log(this.state.tests)
   }
+
+  navigate(e) {
+    let params = {
+      type:'gcj02',
+      latitude: 40.159113,
+      longitude:116.288179,
+      name:"test",
+      address:"detail"
+    }
+    let place = this.state.curTypePlaces[e]
+    params.latitude = place.Latitude
+    params.longitude = place.Longitude
+    params.name = place.Title
+ 
+    Taro.openLocation(params).then((res) => {
+ 
+    })
+  }
+
+  Bar() {
+    console.log("click")
+    var animation = Taro.createAnimation({
+      transformOrigin: "50% 50%",
+      duration: 1000,
+      timingFunction: "ease-in",
+      delay: 0
+    })
+    if(this.state.close) {
+      animation.translate(0,0).step();
+    }
+    else {
+      animation.translate(-200,0).step();
+    }
+    
+    this.setState({
+      animationData:animation.export(),
+      close:!this.state.close
+    })
+
+  }
+
   render () {
     return (
 
       <View>
         <View className="top">
-          <CoverView className="topBar" style={"height:"+topHeight+"px"}>
-            <CoverView className="campusSelect">
-              <CoverView className="campusDetail">
-                <CoverView>沙河校区</CoverView>
-                <CoverImage src={shouqi} className="shouqi"></CoverImage>  
-              </CoverView>
+          
+          <Map className="Map" latitude={latitude} longitude={longitude} id='map' show-location markers={this.state.placeMarkers} onmarkertap={this.onMarkSelected} style={"height:"+topHeight+"px"} >
+            <CoverView className="campusSelect"  animation={animationData} ></CoverView>
+            <CoverView className="campusDetail"  onClick={this.Bar}  >
+              <CoverView>沙河校区</CoverView>
+              {this.state.close 
+              ?<CoverImage src={dakai} className="shouqi"></CoverImage>  
+              :<CoverImage src={shouqi} className="shouqi"></CoverImage>  
+              }      
             </CoverView>
-            <CoverView className="placeSelect"style={"height:"+topHeight+"px"}>
-              <ScrollView scrollY="true" >
-                <CoverView className="placeTypes">
-                  {this.state.placeTypes.map(type => {
-                    return(
-                      <CoverView className="notSelectedPlaceTitle" id={type.id+"type"} onClick={this.placeTypeSelect} key="type">{type.type}</View>
-                    )
-                  })}
-                </CoverView>
-              </ScrollView>         
-            </CoverView>
-          </CoverView>
-          <Map className="Map" latitude={latitude} longitude={longitude} id='map' show-location markers={this.state.placeMarkers} onmarkertap={this.onMarkSelected} style={"height:"+topHeight+"px"} />
-        </View>
-        <View className="displaySelect" onClick={this.displayRev}>共有{this.state.placeNum}个 </View>
-            <ScrollView scrollIntoView={toView} scrollY="true" style={"height:"+bottomHeight+"px"}>
-                {this.state.curTypePlaces.map(detail => {
+            
+            <CoverView className="topBar" style={"height:"+topHeight+"px"} animation={animationData}>
+              <CoverView className="placeSelect" style={"height:"+topHeight+"px"} >
+                  <CoverView className="placeTypes">
+                    {this.state.placeTypes.map(type => {
                       return(
-                        <View className="detailGroup" id={"place"+detail.Id} onClick={this.jumpToDetail}>
-                          <View className="placePicHolder">
+                        <CoverView className="notSelectedPlaceTitle" id={type.id+"type"} onClick={this.placeTypeSelect} key="type">{type.type}</CoverView>
+                      )
+                    })}
+                  </CoverView>
+                       
+              </CoverView>
+            </CoverView>   
+          </Map>
+        </View>
+        <View className="displaySelect" onClick={this.displayRev} style={"margin-top:"+topHeight+"px"}>共有{this.state.placeNum}个 </View>
+            <ScrollView scrollIntoView={toView} scrollWithAnimation="true" scrollY="true" style={"height:"+bottomHeight+"px"}>
+                {this.state.curTypePlaces.map((detail,index) => {
+                      return(
+                        <View  id={"place"+detail.Id} className={this.state.entryId==index ? "detailGroupActive" :"detailGroup"} >
+                          <View className="placePicHolder" onClick={this.jumpToDetail}>
                             <Image className="placePic" src={detail.Picture}/>
                           </View>
-                          <View className="placeTitle">{detail.Title}</View>
+                          <View className="placeTitle" onClick={this.jumpToDetail}>{detail.Title}</View>
+                          <Image className="navigationImage" src={navigationImage} onClick={this.navigate.bind(this, index)}></Image>
                         </View>
                       )
                     })}
