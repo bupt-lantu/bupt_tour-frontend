@@ -77,7 +77,6 @@
     justify-content: center;
 }
 .notSelectedPlaceTitle{
-    
     margin:0 5px;
     padding:15px;
     color:rgba(43,100,177);
@@ -85,14 +84,11 @@
 
 
 .isSelectedPlaceTitle{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 0 10px 10px 10px;
-    padding: 10px 0 5px 0;   
-    color: white;
-    font-size: 30px;
-    border-bottom: 4px solid rgba(229,229,229);
+    margin:0 5px;
+    padding:15px;
+    color:rgba(43,100,177);
+    background: rgba(229, 229, 229, 0.637)
+    
 }
 
 .placeDetail{
