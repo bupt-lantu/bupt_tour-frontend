@@ -13,6 +13,7 @@ export default class mapPage extends Component {
       toView: "place26",
       windowHeight: "667",
       bottomHeight: 300,
+      menuHeight: 0,
       topHeight: 337,
       allPlace: [],
       curTypeId: 2,  //the current selected place type
@@ -28,7 +29,7 @@ export default class mapPage extends Component {
       animationData: {},
       close: false,
       entryId: 100000,
-      topBarheight:400
+      topBarheight:400,
     }
   }
 
@@ -154,7 +155,10 @@ export default class mapPage extends Component {
             tPlaces.set(tp.Id, tp.Places)
           }
         }
-        this.setState({ curTypeId: tPlaceTypes[0].id }) //
+        this.setState({ 
+          curTypeId: tPlaceTypes[0].id,
+          menuHeight: 6 + res.data.length * 7,
+        }) //
         this.setState({ placeTypes: tPlaceTypes }, () => { console.log(this.state.placeTypes) }) //place name and id
         this.setState({ places: tPlaces }, () => {
           console.log(this.state.places);
@@ -204,8 +208,9 @@ export default class mapPage extends Component {
 
   jumpToDetail(e)// call this method when select a place from the list to show details
   {
+    console.log(e)
     Taro.navigateTo({
-      url: '/pages/detailPage/detailPage?id=' + parseInt(e.currentTarget.id)
+      url: '/pages/detailPage/detailPage?id=' + parseInt(e.currentTarget.id.substr(5))
     })
   }
 
@@ -285,8 +290,8 @@ export default class mapPage extends Component {
                 : <CoverImage src={shouqi} className="shouqi"></CoverImage>
               } */}
             </CoverView>
-              
-            <CoverView className="topBar" style={"height:52vh;margin:2.5vh;box-shadow: 0 5rpx 7rpx 0 rgba(0, 0, 0, 0.1), 0 2rpx 4rpx 0 rgba(0, 0, 0, 0.06);"} animation={animationData}>
+            
+            <CoverView className="topBar" style={"height:"+menuHeight+"vh;margin:2.5vh;box-shadow: 0 5rpx 7rpx 0 rgba(0, 0, 0, 0.1), 0 2rpx 4rpx 0 rgba(0, 0, 0, 0.06);"} animation={animationData}>
               <CoverView className="placeSelect" style={"height:52vh"} >
                 <CoverView className="placeTypes">
                   {this.state.placeTypes.map((type,index) => {
@@ -304,11 +309,12 @@ export default class mapPage extends Component {
         <ScrollView scrollIntoView={toView} scrollWithAnimation="true" scrollY="true" style={{position:"fixed",height:'40vh',bottom:0,borderTop:"solid 2rpx lightgray"}}>
           {this.state.curTypePlaces.map((detail, index) => {
             return (
-              <View id={"place" + detail.Id} className={this.state.entryId == index ? "detailGroupActive" : "detailGroup"} >
-                <View className="placePicHolder" onClick={this.jumpToDetail}>
+              <View className={this.state.entryId == index ? "detailGroupActive" : "detailGroup"} >
+                <View className="placePicHolder" id={"place" + detail.Id} onClick={this.jumpToDetail}>
                   <Image className="placePic" src={detail.Picture} />
+                  <View className="placeTitle" >{detail.Title}</View>
                 </View>
-                <View className="placeTitle" onClick={this.jumpToDetail}>{detail.Title}</View>
+                
                 <Image className="navigationImage" src={navigationImage} onClick={this.navigate.bind(this, index)}></Image>
               </View>
             )

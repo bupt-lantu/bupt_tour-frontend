@@ -15,8 +15,6 @@
     position:fixed;
     width:100%;
     top:0;
-    
-    
 }
 .campusDetail{
     position:fixed;
@@ -51,10 +49,9 @@
 .topBar{
    background: white;
     width:200px;
- 
 } 
 .placeSelect{
-    padding-top:100px;
+    padding-top:6vh;
     display: flex;
     flex-flow: column nowrap;
     align-items: center;
@@ -77,22 +74,10 @@
     justify-content: center;
 }
 .notSelectedPlaceTitle{
-    
     margin:0 5px;
-    padding:15px;
+    padding: 1vh;
     color:rgba(43,100,177);
-}
-
-
-.isSelectedPlaceTitle{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 0 10px 10px 10px;
-    padding: 10px 0 5px 0;   
-    color: white;
-    font-size: 30px;
-    border-bottom: 4px solid rgba(229,229,229);
+    height: 5vh;
 }
 
 .placeDetail{
@@ -134,6 +119,8 @@
 
 .placePicHolder{
    padding-left:30px;
+   display: flex;
+   flex-direction: row;
 }
 
 .placePic{
@@ -142,10 +129,10 @@
 }
 
 .placeTitle{
-   padding-left:45px;
-   width:400px;
-   
-    
+    padding-left:45px;
+    width:400px;
+    display: flex;
+    align-items: center;
 }
 
 .navigationImage {
