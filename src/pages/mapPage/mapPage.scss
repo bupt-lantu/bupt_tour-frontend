@@ -52,6 +52,7 @@
 } 
 .placeSelect{
     padding-top:6vh;
+    padding-bottom:6vh;
     display: flex;
     flex-flow: column nowrap;
     align-items: center;
@@ -78,6 +79,10 @@
     padding: 1vh;
     color:rgba(43,100,177);
     height: 5vh;
+    width: 18vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .isSelectedPlaceTitle{
@@ -86,6 +91,10 @@
     color:rgba(43,100,177);
     background-color: rgba(229, 229, 229, 0.7);
     height: 5vh;
+    width: 18vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .placeDetail{

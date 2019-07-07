@@ -158,7 +158,7 @@ export default class mapPage extends Component {
         }
         this.setState({ 
           curTypeId: tPlaceTypes[0].id,
-          menuHeight: 6 + res.data.length * 7,
+          menuHeight: 7 + res.data.length * 7,
         }) //
         this.setState({ placeTypes: tPlaceTypes }, () => { console.log(this.state.placeTypes) }) //place name and id
         this.setState({ places: tPlaces }, () => {
@@ -297,7 +297,6 @@ export default class mapPage extends Component {
                 <CoverView className="placeTypes">
                   {this.state.placeTypes.map(type => {
                     return (
-      
                       <CoverView className={curTypeId == type.id ?"isSelectedPlaceTitle" :"notSelectedPlaceTitle"} id={type.id} onClick={this.placeTypeSelect} key={type}>{type.type}</CoverView>
                     )
                   })}
@@ -316,7 +315,6 @@ export default class mapPage extends Component {
                   <Image className="placePic" src={detail.Picture} />
                   <View className="placeTitle" >{detail.Title}</View>
                 </View>
-                
                 <Image className="navigationImage" src={navigationImage} onClick={this.navigate.bind(this, index)}></Image>
               </View>
             )
