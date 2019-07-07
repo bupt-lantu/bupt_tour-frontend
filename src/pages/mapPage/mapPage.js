@@ -1,8 +1,7 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, ScrollView, Block, Button } from '@tarojs/components'
 import './mapPage.scss';
-import shouqi from '../../static/shouqi.png'
-import dakai from '../../static/dakai.png'
+
 import navigationImage from '../../static/navigationImage.png'
 export default class mapPage extends Component {
 
