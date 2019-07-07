@@ -1,15 +1,6 @@
-.top {
-    
-}
-.topBar{
-    z-index:1000;
-    background-color: white;
-    height: 700px;
-    width:200px;
- 
-}   
 
 .campusSelect{
+    position:fixed;
     height:100px;
     left:0;
     width:200px;
@@ -17,7 +8,7 @@
     display: flex;
     justify-content: center;
     align-items: center;  
-    z-index:10000
+    
 }
 
 .Map {
@@ -25,29 +16,50 @@
     width:100%;
     top:0;
     
+    
 }
 .campusDetail{
-    margin-top:-75px;
-    width:160px;
-    background-color: rgb(87,152,222);
-    border-radius: 20px;
+    position:fixed;
+    top:0;
+    left:0;
+    width:200px;
+    margin-left:10px;
+    height:60px;
+    background-color: rgb(101,152,217);
+    line-height: 60px;
+    text-align: center;
     color:white;
     font-size: 35px;
-    display: flex;
-    flex-flow: row nowrap;
-    justify-content: center;
-    align-items: center;
     z-index:1000;
+    transition: all ease-in-out 1s; 
 }
 
+.campusTitle {
+    top:30px;
+    position:fixed;
+    left:20px;
+}
 .shouqi{
+    margin-top:30px;
+    position:fixed;
     height:20px;
     width:20px;
+    top:10px;
+    left:160px;
 }
+
+.topBar{
+   background: white;
+    width:200px;
+ 
+} 
 .placeSelect{
+    padding-top:100px;
     display: flex;
     flex-flow: column nowrap;
-   
+    align-items: center;
+
+    
     // width: 80vw;
     // position: relative;
     // margin-left: 35vw;
@@ -57,20 +69,20 @@
     // align-items: center;
 }
 
+.placeTypes {
+    // top:-75px;
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    justify-content: center;
+}
 .notSelectedPlaceTitle{
-    height:80px;
-    border-bottom: 4px solid rgba(255, 255, 255, 0.8);
+    
+    margin:0 5px;
+    padding:15px;
+    color:rgba(43,100,177);
 }
 
-.notSelectedPlaceTitle{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 0 10px 10px 10px;
-    padding: 10px 0 5px 0;   
-    color: rgb(87,152,222);
-    font-size: 30px;
-}
 
 .isSelectedPlaceTitle{
     display: flex;
@@ -80,7 +92,7 @@
     padding: 10px 0 5px 0;   
     color: white;
     font-size: 30px;
-    border-bottom: 4px solid rgba(255, 255, 255, 0.8);
+    border-bottom: 4px solid rgba(229,229,229);
 }
 
 .placeDetail{
@@ -113,7 +125,7 @@
 .detailGroupActive{
     display: flex;
     background:#ebebeb;
-    color:#192688;
+    color:rgba(43,100,177);
     flex-direction: row;
     height:160px;
     align-items: center;
