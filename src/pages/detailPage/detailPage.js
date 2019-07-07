@@ -27,8 +27,9 @@ export default class detailPage extends Component {
 
   componentWillMount () {
     let id = this.$router.params.id
+    console.log(123,id)
     Taro.request({
-        url: 'http://139.199.26.178:8000/v1/place/'+id,
+        url: 'http://139.199.26.178:4200/v1/place/'+id,
         header: {
             'accept': 'application/json'
           },

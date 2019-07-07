@@ -204,8 +204,10 @@ export default class mapPage extends Component {
 
   jumpToDetail(e)// call this method when select a place from the list to show details
   {
+    console.log(e)
+    console.log(e.currentTarget.id.substr(4))
     Taro.navigateTo({
-      url: '/pages/detailPage/detailPage?id=' + parseInt(e.currentTarget.id)
+      url: '/pages/detailPage/detailPage?id=' + parseInt(e.currentTarget.id.substr(5))
     })
   }
 
@@ -304,11 +306,11 @@ export default class mapPage extends Component {
         <ScrollView scrollIntoView={toView} scrollWithAnimation="true" scrollY="true" style={{position:"fixed",height:'40vh',bottom:0,borderTop:"solid 2rpx lightgray"}}>
           {this.state.curTypePlaces.map((detail, index) => {
             return (
-              <View id={"place" + detail.Id} className={this.state.entryId == index ? "detailGroupActive" : "detailGroup"} >
-                <View className="placePicHolder" onClick={this.jumpToDetail}>
-                  <Image className="placePic" src={detail.Picture} />
+              <View className={this.state.entryId == index ? "detailGroupActive" : "detailGroup"}> 
+                <View  onClick={this.jumpToDetail} id={"place" + detail.Id}  className="detailInfo">
+                    <Image className="placePic" src={detail.Picture} />
+                    <View className="placeTitle" >{detail.Title}</View>
                 </View>
-                <View className="placeTitle" onClick={this.jumpToDetail}>{detail.Title}</View>
                 <Image className="navigationImage" src={navigationImage} onClick={this.navigate.bind(this, index)}></Image>
               </View>
             )

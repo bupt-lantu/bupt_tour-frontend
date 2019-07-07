@@ -132,6 +132,10 @@
     border-bottom: 2px solid lightgray;
 }
 
+.detailInfo {
+    display: flex;    
+
+}
 .placePicHolder{
    padding-left:30px;
 }
@@ -139,13 +143,6 @@
 .placePic{
     width: 150px;
     height: 105px;
-}
-
-.placeTitle{
-   padding-left:45px;
-   width:400px;
-   
-    
 }
 
 .navigationImage {
