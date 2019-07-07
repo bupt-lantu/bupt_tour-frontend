@@ -61,12 +61,13 @@ export default class mapPage extends Component {
 
 
   placeTypeSelect(e) {
-    console.log(this.state.allPlace)
-    console.log(e)
     this.setState({
       curTypeId: parseInt(e.currentTarget.id),
       entryId:10000
-    }, () => { this.setCurTypePlaces() })
+    }, () => { 
+      this.setCurTypePlaces()
+      console.log(this.state.curTypeId)
+    })
   }
 
   displayRev() {
@@ -294,9 +295,10 @@ export default class mapPage extends Component {
             <CoverView className="topBar" style={"height:"+menuHeight+"vh;margin:2.5vh;box-shadow: 0 5rpx 7rpx 0 rgba(0, 0, 0, 0.1), 0 2rpx 4rpx 0 rgba(0, 0, 0, 0.06);"} animation={animationData}>
               <CoverView className="placeSelect" style={"height:52vh"} >
                 <CoverView className="placeTypes">
-                  {this.state.placeTypes.map((type,index) => {
+                  {this.state.placeTypes.map(type => {
                     return (
-                      <CoverView className="notSelectedPlaceTitle" id={type.id + "type"} onClick={this.placeTypeSelect} key={type}>{type.type}</CoverView>
+      
+                      <CoverView className={curTypeId == type.id ?"isSelectedPlaceTitle" :"notSelectedPlaceTitle"} id={type.id} onClick={this.placeTypeSelect} key={type}>{type.type}</CoverView>
                     )
                   })}
                 </CoverView>

@@ -80,6 +80,14 @@
     height: 5vh;
 }
 
+.isSelectedPlaceTitle{
+    margin:0 5px;
+    padding: 1vh;
+    color:rgba(43,100,177);
+    background-color: rgba(229, 229, 229, 0.7);
+    height: 5vh;
+}
+
 .placeDetail{
     width: 100%;
     height: 40vh;
@@ -117,6 +125,10 @@
     border-bottom: 2px solid lightgray;
 }
 
+.detailInfo {
+    display: flex;    
+
+}
 .placePicHolder{
    padding-left:30px;
    display: flex;
