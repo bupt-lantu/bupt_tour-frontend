@@ -1,51 +1,88 @@
-.topBar{
-    background-color: rgb(0, 191, 255);
-    display: flex;
-    flex-direction: row;
-    height: 6vh;
-}   
 
 .campusSelect{
+    position:fixed;
+    height:100px;
+    left:0;
+    width:200px;
+    background-color: white;
     display: flex;
     justify-content: center;
-    align-items: center;
-    margin: 0px 30px 20px 30px;
-    padding: 10px 20px 10px 20px;
-    border-radius: 30px;
-    color: white;
-    font-size: 30px;
-    letter-spacing: 5px;
-    font-weight: bold;
-    background-color: rgba(255, 255, 255, 0.233);
-    width: 20vw;
-    position: fixed;    
+    align-items: center;  
+    
 }
 
+.Map {
+    position:fixed;
+    width:100%;
+    top:0;
+    
+    
+}
+.campusDetail{
+    position:fixed;
+    top:0;
+    left:0;
+    width:200px;
+    margin-left:10px;
+    height:60px;
+    background-color: rgb(101,152,217);
+    line-height: 60px;
+    text-align: center;
+    color:white;
+    font-size: 35px;
+    z-index:1000;
+    transition: all ease-in-out 1s; 
+}
+
+.campusTitle {
+    top:30px;
+    position:fixed;
+    left:20px;
+}
+.shouqi{
+    margin-top:30px;
+    position:fixed;
+    height:20px;
+    width:20px;
+    top:10px;
+    left:160px;
+}
+
+.topBar{
+   background: white;
+    width:200px;
+ 
+} 
 .placeSelect{
-    width: 80vw;
-    position: relative;
-    margin-left: 35vw;
-    padding: 10px 0 10px 0;
+    padding-top:100px;
     display: flex;
-    flex-direction: row;
+    flex-flow: column nowrap;
     align-items: center;
+
+    
+    // width: 80vw;
+    // position: relative;
+    // margin-left: 35vw;
+    // padding: 10px 0 10px 0;
+    // display: flex;
+    // flex-direction: row;
+    // align-items: center;
 }
 
-.placeTypes{
+.placeTypes {
+    // top:-75px;
     display: flex;
-    flex-direction: row;
+    flex-flow: column nowrap;
     align-items: center;
-}
-
-.notSelectedPlaceTitle{
-    display: flex;
     justify-content: center;
-    align-items: center;
-    margin: 0 10px 10px 10px;
-    padding: 10px 0 5px 0;   
-    color: white;
-    font-size: 30px;
 }
+.notSelectedPlaceTitle{
+    
+    margin:0 5px;
+    padding:15px;
+    color:rgba(43,100,177);
+}
+
 
 .isSelectedPlaceTitle{
     display: flex;
@@ -55,7 +92,7 @@
     padding: 10px 0 5px 0;   
     color: white;
     font-size: 30px;
-    border-bottom: 4px solid rgba(255, 255, 255, 0.8);
+    border-bottom: 4px solid rgba(229,229,229);
 }
 
 .placeDetail{
@@ -71,7 +108,7 @@
     font-size: small;
     letter-spacing: 3px;
     padding: 10px;
-    height: 4vh;
+    height: 60px;
     color: rgb(0, 191, 255);
     border: 3px solid rgba(151, 151, 151, 0.3);
     box-shadow: 0 2px 3px rgba(151, 151, 151, 0.3);
@@ -80,26 +117,38 @@
 .detailGroup{
     display: flex;
     flex-direction: row;
-    padding: 2%;
+    height:160px;
+    align-items: center;
+    border-bottom: 2px solid lightgray;
+}
+
+.detailGroupActive{
+    display: flex;
+    background:#ebebeb;
+    color:rgba(43,100,177);
+    flex-direction: row;
+    height:160px;
+    align-items: center;
     border-bottom: 2px solid lightgray;
 }
 
 .placePicHolder{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 30%;
+   padding-left:30px;
 }
 
 .placePic{
-    width: 25vw;
-    height: 10vh;
+    width: 150px;
+    height: 105px;
 }
 
 .placeTitle{
-    width: 70%;
-    padding: 5%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+   padding-left:45px;
+   width:400px;
+   
+    
+}
+
+.navigationImage {
+    height:50px;
+    width:50px;
 }

@@ -1,6 +1,6 @@
 const config = {
-  projectName: 'bupt_tour-frontend',
-  date: '2019-4-17',
+  projectName: 'buptTour',
+  date: '2019-7-3',
   designWidth: 750,
   deviceRatio: {
     '640': 2.34 / 2,

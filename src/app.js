@@ -13,16 +13,17 @@ class App extends Component {
 
   config = {
     pages: [
-      'pages/index/index',
       'pages/mapPage/mapPage',
+      'pages/index/index',
+     
       'pages/detailPage/detailPage'
     ],
     requiredBackgroundModes: ['audio'],
     window: {
       backgroundTextStyle: 'light',
-      navigationBarBackgroundColor: '#00BFFF',
+      navigationBarBackgroundColor: '#1564B8',
       navigationBarTitleText: 'WeChat',
-      navigationBarTextStyle: 'black'
+      navigationBarTextStyle: 'white'
     },
     permission: {
       'scope.userLocation': {
