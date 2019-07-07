@@ -66,7 +66,7 @@ export default class detailPage extends Component {
           <View className="title">{placeTitle}</View>
         </View>
         <View className="detail">
-          <View>
+          <View className="palyerCountainer">
             <Audio
               id = "descPlayer" 
               //className="player" 
@@ -76,6 +76,7 @@ export default class detailPage extends Component {
               author = "SZH233" 
               poster = {placePicSource}
               onClick={this.changeDiscAudioState} 
+              className="soundPlayer"
             />
           </View>
           <View className="placeDiscription">{placeDiscription}</View>
