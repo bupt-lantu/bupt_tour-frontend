@@ -1,7 +1,7 @@
 import Taro, { Component } from '@tarojs/taro'
 import Index from './pages/index'
 
-import './app.scss'
+import './app.less'
 
 // 如果需要在 h5 环境中开启 React Devtools
 // 取消以下注释：
@@ -13,24 +13,13 @@ class App extends Component {
 
   config = {
     pages: [
-      'pages/mapPage/mapPage',
-      
-      'pages/detailPage/detailPage',
-      
-     
-      
+      'pages/index/index'
     ],
-    requiredBackgroundModes: ['audio'],
     window: {
       backgroundTextStyle: 'light',
-      navigationBarBackgroundColor: '#1564B8',
+      navigationBarBackgroundColor: '#fff',
       navigationBarTitleText: 'WeChat',
-      navigationBarTextStyle: 'white'
-    },
-    permission: {
-      'scope.userLocation': {
-        desc: '请求地理信息'
-      },
+      navigationBarTextStyle: 'black'
     }
   }
 
