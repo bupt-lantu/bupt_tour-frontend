@@ -8,7 +8,6 @@
     display: flex;
     justify-content: center;
     align-items: center;  
-    
 }
 
 .Map {
@@ -19,19 +18,42 @@
     
 }
 .campusDetail{
+    margin:"2.5vh";
     position:fixed;
     top:0;
     left:0;
     width:200px;
     margin-left:10px;
-    height:60px;
-    background-color: rgb(101,152,217);
+    height:100px;
+    background-color: white;
     line-height: 60px;
     text-align: center;
-    color:white;
+    color:rgba(43,100,177);
     font-size: 35px;
     z-index:1000;
-    transition: all ease-in-out 1s; 
+    border-radius: 20px;
+}
+
+.campusContainer {
+    display: flex;
+    flex-flow: column nowrap;
+}
+
+.campusTop{
+    display: flex;
+    flex-flow: row nowrap;
+}
+
+.xiala {
+    width:20px;
+    height:20px;
+}
+
+.functionSelectImage {
+    width:40px;
+    height:40px;
+    margin-left:87vw;
+    margin-top:2.5vh;
 }
 
 .campusTitle {
@@ -39,26 +61,38 @@
     position:fixed;
     left:20px;
 }
-.shouqi{
-    margin-top:30px;
-    position:fixed;
-    height:20px;
-    width:20px;
-    top:10px;
-    left:160px;
+
+.vrImage {
+    position: fixed;
+    width:70px;
+    height:70px;
+    top:48vh;
+    left:5vw;
+}
+.topBar{
+    width:170px;
+    margin-left:75vw;
+    background: white;
+  
+} 
+
+.topBar:before {
+    position: absolute;
+    content: "";
+    width:0;
+    height:0;
+    margin-left:10vw;
+    margin-top:-40px;
+    border: 20px solid transparent;
+    border-bottom-color: white;
 }
 
-.topBar{
-   background: white;
-    width:200px;
- 
-} 
 .placeSelect{
     padding-top:100px;
     display: flex;
     flex-flow: column nowrap;
     align-items: center;
-
+    
     
     // width: 80vw;
     // position: relative;
