@@ -11,7 +11,7 @@ export default class mapPage extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      functionClose: true,
+      functionClose: false,
       menuHeight: 10,
       open: false,
       shaheCampus: true,
@@ -410,8 +410,9 @@ export default class mapPage extends Component {
                 </CoverView>)}
             </CoverView>
 
-
-            <CoverImage src={vrImage} className="vrImage"></CoverImage>
+            {shaheCampus &&
+              <CoverImage src={vrImage} className="vrImage"></CoverImage>
+            }
           </Map>
         </View>
         {/* <View className="displaySelect" onClick={this.displayRev} style={"margin-top:" + topHeight + "px"}>共有{this.state.placeNum}个 </View> */}
