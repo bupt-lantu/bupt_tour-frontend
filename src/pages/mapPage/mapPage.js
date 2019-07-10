@@ -244,7 +244,6 @@ export default class mapPage extends Component {
     //   }
     // })
     let id = this.$router.params.id
-    id = 1
     if (id == 1) {
       this.changeCampus(1)
       this.setState({
