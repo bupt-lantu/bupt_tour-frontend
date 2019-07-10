@@ -1,32 +1,42 @@
 import Taro, { Component } from '@tarojs/taro'
-import { View, Text, ScrollView, Block, Button } from '@tarojs/components'
+import { View, Text, ScrollView, Block, Button, CoverImage } from '@tarojs/components'
 import './mapPage.scss';
-
 import navigationImage from '../../static/navigationImage.png'
+import functionSelect from '../../static/functionSelect.png'
+import vrImage from '../../static/vr.png'
 export default class mapPage extends Component {
 
   constructor(props) {
     super(props)
     this.state = {
-      tests: "green",
+      menuHeight:10,
+      open: false,
+      shaheCampus: true,
       toView: "place26",
       windowHeight: "667",
       bottomHeight: 300,
       menuHeight: 0,
       topHeight: 337,
-      allPlace: [],
+      benbucurTypeId: 2,
+      shahecurTypeId: 2,
       curTypeId: 2,  //the current selected place type
       detailDisplay: 1, //the detail for a type of place should be displayed or not
       placeNum: 0,  //the number of curType of place
       curTypePlaces: [], //an array of the selected place
-      placeTypes: [], //an array of all types {id: , type: }
-      places: new Map(),//key: id, value: array of places
+      shaheplaceTypes: [], //an array of all types {id: , type: }
+      benbuplaceTypes:[],
+      placeTypes: [],
+      shaheplaces: new Map(),//key: id, value: array of places
+      benbuplaces: new Map(),
+      places:new Map(),
       placeMarkers: [],
       curDescrPlaceId: -1,
+      shahelatitude: 40.159113,
+      shahelongitude: 116.288179,
+      benbulatitude: 39.961370,
+      benbulongitude: 116.35826,
       latitude: 40.159113,
       longitude: 116.288179,
-      animationData: {},
-      close: false,
       entryId: 100000,
       topBarheight:400,
     }
@@ -39,7 +49,6 @@ export default class mapPage extends Component {
 
   setCurTypePlaces() {
     //把下方列表需要渲染的部分装入curTypePlaces[]
-
     this.setState({ curTypePlaces: this.state.places.get(this.state.curTypeId) }, () => {
       let tempMarkers = []
       for (let mk in this.state.curTypePlaces) {
@@ -54,7 +63,7 @@ export default class mapPage extends Component {
         })
       }
       this.setState({ placeMarkers: tempMarkers }, () => { console.log(this.state.placeMarkers) })
-      this.setState({ placeNum: this.state.curTypePlaces.length })
+      // this.setState({ placeNum: this.state.curTypePlaces.length })
     })
   }
 
@@ -62,18 +71,10 @@ export default class mapPage extends Component {
   placeTypeSelect(e) {
     this.setState({
       curTypeId: parseInt(e.currentTarget.id),
-      entryId:10000
-    }, () => { 
+      entryId: 10000
+    }, () => {
       this.setCurTypePlaces()
       console.log(this.state.curTypeId)
-    })
-  }
-
-  displayRev() {
-    var temp = this.state.detailDisplay;
-    temp = (temp + 1) % 2;
-    this.setState({
-      detailDisplay: temp
     })
   }
 
@@ -130,15 +131,8 @@ export default class mapPage extends Component {
 
     this.normalMarkerSrc = 'https://s2.ax1x.com/2019/07/04/ZUHKd1.png'
     this.nearastMarkerSrc = 'https://s2.ax1x.com/2019/07/04/ZUOvHH.png'
-    Taro.request({
-      url: 'http://139.199.26.178:8000/v1/place/',
-      method: 'GET'
-    }).then(res => {
-      this.setState({
-        allPlace: res.data
-      })
-    });
-
+    
+    //沙河校区后台
     Taro.request({
       url: 'http://139.199.26.178:8000/v1/placetype/',
       header: {
@@ -155,56 +149,112 @@ export default class mapPage extends Component {
             tPlaces.set(tp.Id, tp.Places)
           }
         }
-        this.setState({ 
-          curTypeId: tPlaceTypes[0].id,
+        this.setState({
+          shahecurTypeId: tPlaceTypes[0].id,
           menuHeight: 7 + res.data.length * 7,
-        }) //
-        this.setState({ placeTypes: tPlaceTypes }, () => { console.log(this.state.placeTypes) }) //place name and id
-        this.setState({ places: tPlaces }, () => {
-          console.log(this.state.places);
-          this.setCurTypePlaces();
+          shaheplaceTypes: tPlaceTypes,
+          shaheplaces: tPlaces
         }) //place detail in index 
       })
+
+      //本部校区后台
+      Taro.request({
+        url: 'http://139.199.26.178:8000/v1/placetype/',
+        header: {
+          'accept': 'application/json'
+        },
+        method: 'GET'
+      })
+        .then(res => {
+          let tPlaceTypes = []
+          let tPlaces = new Map();
+          for (let tp of res.data) {
+            if (tp.hasOwnProperty('Places')) {
+              if(tp.Id == 4) break;
+              tPlaceTypes.push({ id: tp.Id, type: tp.Type })
+              tPlaces.set(tp.Id, tp.Places)
+            }
+          }
+          this.setState({
+            benbucurTypeId: tPlaceTypes[0].id,
+            menuHeight: 7 + res.data.length * 7,
+            benbuplaceTypes: tPlaceTypes,
+            benbuplaces: tPlaces
+          }) //place detail in index 
+        })
+
+
+
     this.mpContext = wx.createMapContext('map')
   }
 
+  //1为本部，2为沙河
+  changeCampus(flag) {
+    if(flag == 1) {
+      this.setState({
+        latitude: this.state.benbulatitude,
+        longitude:this.state.benbulongitude,
+        curTypeId: this.state.benbucurTypeId,
+        places:this.state.benbuplaces,
+        placeTypes:this.state.benbuplaceTypes
+      },() => {
+        this.setCurTypePlaces()
+      })
+    }
+    else {
+      this.setState({
+        latitude: this.state.shahelatitude,
+        longitude:this.state.shahelongitude,
+        curTypeId: this.state.shahecurTypeId,
+        places:this.state.shaheplaces,
+        placeTypes:this.state.shaheplaceTypes,
+      },() => {
+        this.setCurTypePlaces()
+      })
+    }
+  }
   componentDidMount() {
     Taro.getSystemInfo().then((res) => {
       console.log(res)
-      let topheight = res.windowHeight * 0.6 
-      let topBarheight = topheight-35
-      if(res.model.search('iPhone X') == -1) {
-        var bottomheight = res.windowHeight *0.4 -47
+      let topheight = res.windowHeight * 0.6
+      let topBarheight = topheight - 35
+      if (res.model.search('iPhone X') == -1) {
+        var bottomheight = res.windowHeight * 0.4 - 47
       }
       else {
-        var bottomheight = res.windowHeight *0.4 -133
+        var bottomheight = res.windowHeight * 0.4 - 133
       }
-      
-      console.log(topheight,bottomheight)
+
+      console.log(topheight, bottomheight)
       this.setState({
-        topBarheight:topBarheight,
+        topBarheight: topBarheight,
         windowHeight: res.windowHeight,
         topHeight: topheight,
         bottomHeight: bottomheight
       }, () => { console.log(this.state.topHeight, this.state.bottomHeight) })
     })
-    wx.getLocation({ success: this.showLocation.bind(this) })
-    this.mpContext.moveToLocation()
+    Taro.getLocation({ type:"gcj02" }).then (res => {
+      console.log(40690690)
+      console.log(res)
+      if((Math.pow(Math.abs(res.latitude - this.state.shahelatitude),2) + Math.pow(Math.abs(res.longitude - this.state.benbulongitude),2)) > (Math.pow(Math.abs(res.latitude - this.state.benbulatitude),2) + Math.pow(Math.abs(res.longitude - this.state.benbulongitude),2))) {
+        this.changeCampus(1)
+      }
+      else {
+        this.changeCampus(2)
+      }
+    })
+    // this.mpContext.moveToLocation()
     this.descIntervalId = setInterval(this.describePlaceNearBy.bind(this), 5000)
   }
 
+
+  
   componentWillUnmount() {
     clearInterval(this.descIntervalId)
   }
-  componentDidShow() {
-
-  }
+  componentDidShow() {}
 
   componentDidHide() { }
-
-  showLocation(loc) {
-    console.log(loc)
-  }
 
   jumpToDetail(e)// call this method when select a place from the list to show details
   {
@@ -228,9 +278,12 @@ export default class mapPage extends Component {
 
   //地图导航界面
   onMarkSelected(e) {
+    console.log(e)
+    console.log(e["markerId"])
+    console.log(this.state.placeMarkers)
     this.setState({
-      toView: "place" + this.state.placeMarkers[e.detail["markerId"]].Id,
-      entryId: e.detail["markerId"],
+      toView: "place" + this.state.placeMarkers[e["markerId"]].Id, 
+      entryId: e["markerId"],
     })
   }
 
@@ -246,10 +299,7 @@ export default class mapPage extends Component {
     params.latitude = place.Latitude
     params.longitude = place.Longitude
     params.name = place.Title
-
-    Taro.openLocation(params).then((res) => {
-
-    })
+    Taro.openLocation(params)
   }
 
   Bar() {
@@ -274,6 +324,35 @@ export default class mapPage extends Component {
 
   }
 
+  spreadOut() {
+    this.setState({
+      open: !this.state.open
+    }, () => {
+      console.log(this.state.shaheCampus)
+    })
+  }
+
+  topCampusSelect() {
+    this.setState({
+      open:false
+    })
+  }
+
+  bottomCampusSelect() {
+    this.setState({
+      open:false,
+      shaheCampus: !this.state.shaheCampus
+    },() => {
+      if(this.state.shaheCampus) {
+        this.changeCampus(2)
+      }
+      else {
+        this.changeCampus(1)
+      }
+    })
+
+
+  }
   render() {
     return (
 
@@ -281,32 +360,37 @@ export default class mapPage extends Component {
         <View className="top">
 
           <Map className="Map" latitude={latitude} longitude={longitude} id='map' show-location markers={this.state.placeMarkers} onmarkertap={this.onMarkSelected} style={"height:" + topHeight + "px"} >
-          {/* <CoverView className="campusSelect" animation={animationData} ></CoverView> */}
-            <CoverView className="campusDetail" onClick={this.Bar} style={{margin:"2.5vh",borderTopLeftRadius:'0',borderTopRightRadius:'0',borderBottomLeftRadius:this.state.close ? '0' : '0',borderBottomRightRadius:this.state.close ? '0' : '0'}} >
-             沙河校区{this.state.close ? ' >' :' <'}
-             
-              {/* {this.state.close
-                ? <CoverImage src={dakai} className="shouqi"></CoverImage>
-                : <CoverImage src={shouqi} className="shouqi"></CoverImage>
-              } */}
+            <CoverView className="campusDetail" onClick={this.Bar} >
+              <CoverView className='campusContainer'>
+                <CoverView className='campusTop'>
+                  <CoverView onClick={this.topCampusSelect}>{shaheCampus ? '沙河校区' : '西土城校区' }</CoverView>
+                  <CoverImage src={xiala} className='xiala' onClick={this.spreadOut}></CoverImage>
+                </CoverView>
+                {this.state.open &&
+                  <CoverView onClick={this.bottomCampusSelect}>{shaheCampus ? '西土城校区' : '沙河校区'}</CoverView>
+                }
+              </CoverView>
+
             </CoverView>
-            
-            <CoverView className="topBar" style={"height:"+menuHeight+"vh;margin:2.5vh;box-shadow: 0 5rpx 7rpx 0 rgba(0, 0, 0, 0.1), 0 2rpx 4rpx 0 rgba(0, 0, 0, 0.06);"} animation={animationData}>
+
+            <Image src={functionSelect} className="functionSelectImage"></Image>
+            <CoverView className="topBar" style={"height:"+menuHeight+"vh;"} >
               <CoverView className="placeSelect" style={"height:52vh"} >
                 <CoverView className="placeTypes">
                   {this.state.placeTypes.map(type => {
                     return (
-                      <CoverView className={curTypeId == type.id ?"isSelectedPlaceTitle" :"notSelectedPlaceTitle"} id={type.id} onClick={this.placeTypeSelect} key={type}>{type.type}</CoverView>
+                      <CoverView className={curTypeId == type.id ? "isSelectedPlaceTitle" : "notSelectedPlaceTitle"} id={type.id} onClick={this.placeTypeSelect} key={type}>{type.type}</CoverView>
                     )
                   })}
                 </CoverView>
 
               </CoverView>
             </CoverView>
+            <Image src={vrImage} className="vrImage"></Image>
           </Map>
         </View>
         {/* <View className="displaySelect" onClick={this.displayRev} style={"margin-top:" + topHeight + "px"}>共有{this.state.placeNum}个 </View> */}
-        <ScrollView scrollIntoView={toView} scrollWithAnimation="true" scrollY="true" style={{position:"fixed",height:'40vh',bottom:0,borderTop:"solid 2rpx lightgray"}}>
+        <ScrollView scrollIntoView={toView} scrollWithAnimation="true" scrollY="true" style={{ position: "fixed", height: '40vh', bottom: 0, borderTop: "solid 2rpx lightgray" }}>
           {this.state.curTypePlaces.map((detail, index) => {
             return (
               <View className={this.state.entryId == index ? "detailGroupActive" : "detailGroup"} >
