@@ -2,6 +2,7 @@ import Taro, { Component } from '@tarojs/taro'
 import { View, Text, ScrollView, Block, Button, CoverImage } from '@tarojs/components'
 import './mapPage.scss';
 import xiala from '../../static/xiala.png'
+import triangleWhite from '../../static/triangleWhite.png'
 import navigationImage from '../../static/navigationImage.png'
 import functionSelect from '../../static/functionSelect.png'
 import vrImage from '../../static/vr.png'
@@ -17,7 +18,6 @@ export default class mapPage extends Component {
       toView: "place26",
       windowHeight: "667",
       bottomHeight: 300,
-      menuHeight: 0,
       topHeight: 337,
       benbucurTypeId: 2,
       shahecurTypeId: 2,
@@ -179,7 +179,6 @@ export default class mapPage extends Component {
         }
         this.setState({
           benbucurTypeId: tPlaceTypes[0].id,
-          menuHeight: 7 + res.data.length * 7,
           benbuplaceTypes: tPlaceTypes,
           benbuplaces: tPlaces
         }) //place detail in index 
@@ -369,7 +368,8 @@ export default class mapPage extends Component {
         <View className="top">
 
           <Map className="Map" latitude={latitude} longitude={longitude} id='map' show-location markers={this.state.placeMarkers} onmarkertap={this.onMarkSelected} style={"height:" + topHeight + "px"} >
-            <CoverView className="campusDetail" onClick={this.Bar} >
+            {/* 不在这个页面选择校区 */}
+            {/* <CoverView className="campusDetail" onClick={this.Bar} >
               <CoverView className='campusContainer'>
                 <CoverView className='campusTop'>
                   <CoverView onClick={this.topCampusSelect}>{shaheCampus ? '沙河校区' : '西土城校区'}</CoverView>
@@ -379,25 +379,23 @@ export default class mapPage extends Component {
                   <CoverView onClick={this.bottomCampusSelect}>{shaheCampus ? '西土城校区' : '沙河校区'}</CoverView>
                 }
               </CoverView>
+            </CoverView> */}
+            <CoverView className="campusTitle">沙河校区</CoverView>
 
-            </CoverView>
+            <CoverView className="rightBar">
+              <CoverImage src={functionSelect} className="functionSelectImage" onClick={this.changeFunctionClose}></CoverImage>
+              {functionClose && (<CoverImage src={triangleWhite} className="triangle_white"></CoverImage>)}
+              {functionClose &&
+                (<CoverView className="placeBar" >
+                  {this.state.placeTypes.map(type => {
+                    return (
+                      <CoverView className={curTypeId == type.id ? "isSelectedPlaceTitle" : "notSelectedPlaceTitle"} id={type.id} onClick={this.placeTypeSelect} key={type}>{type.type}</CoverView>
+                    )
+                  })}
+                </CoverView>)}
+              </CoverView>
 
-            <Image src={functionSelect} className="functionSelectImage" onClick={this.changeFunctionClose}></Image>
-            {functionClose &&
-              <CoverView className="topBar" style={"height:" + menuHeight + "vh;"} >
-                <CoverView className="placeSelect" style={"height:52vh"} >
-                  <CoverView className="placeTypes">
-                    {this.state.placeTypes.map(type => {
-                      return (
-                        <CoverView className={curTypeId == type.id ? "isSelectedPlaceTitle" : "notSelectedPlaceTitle"} id={type.id} onClick={this.placeTypeSelect} key={type}>{type.type}</CoverView>
-                      )
-                    })}
-                  </CoverView>
-
-                </CoverView>
-              </CoverView>}
-
-            <Image src={vrImage} className="vrImage"></Image>
+            <CoverImage src={vrImage} className="vrImage"></CoverImage>
           </Map>
         </View>
         {/* <View className="displaySelect" onClick={this.displayRev} style={"margin-top:" + topHeight + "px"}>共有{this.state.placeNum}个 </View> */}

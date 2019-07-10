@@ -47,89 +47,76 @@
     height:20px;
 }
 
-.functionSelectImage {
-    width:40px;
-    height:40px;
-    margin-left:87vw;
-    margin-top:2.5vh;
-}
-
 .campusTitle {
-    top:30px;
     position:fixed;
-    left:20px;
+    top:40px;
+    left:30px;
+    background-color: white;
+    color: rgba(43,100,177);
+    border-radius: 20px;
+    font-size: 28px;
+    padding: 15px;
+    letter-spacing: 3px;
+    text-align: center;
 }
 
 .vrImage {
     position: fixed;
-    width:70px;
-    height:70px;
-    top:48vh;
+    width:80px;
+    height:80px;
+    top:45vh;
     left:5vw;
 }
-.topBar{
-    width:170px;
-    margin-left:75vw;
+
+.rightBar{
+    height: 60vh;
+    width: 20vw;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    margin-right: 3.5vw;
+    // background-color: aqua;
+    position: fixed;
+    right: 0;
+}
+
+.functionSelectImage {
+    width:40px;
+    height:40px;
+    padding-top: 3.5vh;
+}
+
+.triangle_white{
+    height: 16px;
+    width: 24%;
+    padding-top: 1vh;
+}
+
+.placeBar{
     background: white;
-  
+    border-radius: 10px;
+    padding: 1vh;
+    flex-direction: column;
 } 
 
-.topBar:before {
-    position: absolute;
-    content: "";
-    width:0;
-    height:0;
-    margin-left:10vw;
-    margin-top:-40px;
-    border: 20px solid transparent;
-    border-bottom-color: white;
-}
-
-.placeSelect{
-    padding-top:6vh;
-    padding-bottom:6vh;
-    display: flex;
-    flex-flow: column nowrap;
-    align-items: center;
-    
-    
-    // width: 80vw;
-    // position: relative;
-    // margin-left: 35vw;
-    // padding: 10px 0 10px 0;
-    // display: flex;
-    // flex-direction: row;
-    // align-items: center;
-}
-
-.placeTypes {
-    // top:-75px;
-    display: flex;
-    flex-flow: column nowrap;
-    align-items: center;
-    justify-content: center;
-}
 .notSelectedPlaceTitle{
     margin:0 5px;
-    padding: 1vh;
-    color:rgba(43,100,177);
-    height: 5vh;
-    width: 18vw;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    padding: 0.5vh;
+    color:rgb(134, 134, 134);
+    font-size: 28px;
+    height: 4vh;
+    width: 16vw;
+    text-align: center;
 }
 
 .isSelectedPlaceTitle{
     margin:0 5px;
-    padding: 1vh;
+    padding: 0.5vh;
     color:rgba(43,100,177);
-    background-color: rgba(229, 229, 229, 0.7);
-    height: 5vh;
-    width: 18vw;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    font-size: 28px;
+    height: 4vh;
+    width: 16vw;
+    text-align: center;
 }
 
 .placeDetail{
