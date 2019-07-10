@@ -1,7 +1,6 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, ScrollView, Block, Button, CoverImage } from '@tarojs/components'
 import './mapPage.scss';
-import xiala from '../../static/xiala.png'
 import navigationImage from '../../static/navigationImage.png'
 import functionSelect from '../../static/functionSelect.png'
 import vrImage from '../../static/vr.png'
@@ -16,6 +15,7 @@ export default class mapPage extends Component {
       toView: "place26",
       windowHeight: "667",
       bottomHeight: 300,
+      menuHeight: 0,
       topHeight: 337,
       benbucurTypeId: 2,
       shahecurTypeId: 2,
@@ -38,7 +38,7 @@ export default class mapPage extends Component {
       latitude: 40.159113,
       longitude: 116.288179,
       entryId: 100000,
-      topBarheight: 400,
+      topBarheight:400,
     }
   }
 
@@ -259,7 +259,6 @@ export default class mapPage extends Component {
   jumpToDetail(e)// call this method when select a place from the list to show details
   {
     console.log(e)
-    console.log(e.currentTarget.id.substr(4))
     Taro.navigateTo({
       url: '/pages/detailPage/detailPage?id=' + parseInt(e.currentTarget.id.substr(5))
     })
@@ -394,10 +393,10 @@ export default class mapPage extends Component {
         <ScrollView scrollIntoView={toView} scrollWithAnimation="true" scrollY="true" style={{ position: "fixed", height: '40vh', bottom: 0, borderTop: "solid 2rpx lightgray" }}>
           {this.state.curTypePlaces.map((detail, index) => {
             return (
-              <View className={this.state.entryId == index ? "detailGroupActive" : "detailGroup"}> 
-                <View  onClick={this.jumpToDetail} id={"place" + detail.Id}  className="detailInfo">
-                    <Image className="placePic" src={detail.Picture} />
-                    <View className="placeTitle" >{detail.Title}</View>
+              <View className={this.state.entryId == index ? "detailGroupActive" : "detailGroup"} >
+                <View className="placePicHolder" id={"place" + detail.Id} onClick={this.jumpToDetail}>
+                  <Image className="placePic" src={detail.Picture} />
+                  <View className="placeTitle" >{detail.Title}</View>
                 </View>
                 <Image className="navigationImage" src={navigationImage} onClick={this.navigate.bind(this, index)}></Image>
               </View>

@@ -1,8 +1,13 @@
 .placePicture{
-    width: 100%;
-    height: 40vh;
+    width: 750px;
+
+    height: 563px;
 }
 
+.navImage {
+    height:40px;
+    width:40px;
+}
 .titleGroup{
     display: flex;
     flex-direction: row;
@@ -15,7 +20,17 @@
     padding: 10px;
     width: 80%;
     font-size: 40px;
-    color: rgb(0, 154, 206);  
+    color: #1564b8;  
+}
+
+.palyerCountainer{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.player {
+    padding-left:50px;
 }
 
 .detail{
@@ -26,5 +41,8 @@
 }
 
 .placeDiscription{
+    width:615px;
+    height:30vh;
+    padding-left:7%;
     margin-top: 3vh;
 }
