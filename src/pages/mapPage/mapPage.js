@@ -1,6 +1,7 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, ScrollView, Block, Button, CoverImage } from '@tarojs/components'
 import './mapPage.scss';
+import xiala from '../../static/xiala.png'
 import navigationImage from '../../static/navigationImage.png'
 import functionSelect from '../../static/functionSelect.png'
 import vrImage from '../../static/vr.png'
@@ -9,7 +10,8 @@ export default class mapPage extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      menuHeight:10,
+      functionClose: false,
+      menuHeight: 10,
       open: false,
       shaheCampus: true,
       toView: "place26",
@@ -24,11 +26,11 @@ export default class mapPage extends Component {
       placeNum: 0,  //the number of curType of place
       curTypePlaces: [], //an array of the selected place
       shaheplaceTypes: [], //an array of all types {id: , type: }
-      benbuplaceTypes:[],
+      benbuplaceTypes: [],
       placeTypes: [],
       shaheplaces: new Map(),//key: id, value: array of places
       benbuplaces: new Map(),
-      places:new Map(),
+      places: new Map(),
       placeMarkers: [],
       curDescrPlaceId: -1,
       shahelatitude: 40.159113,
@@ -38,7 +40,7 @@ export default class mapPage extends Component {
       latitude: 40.159113,
       longitude: 116.288179,
       entryId: 100000,
-      topBarheight:400,
+      topBarheight: 400,
     }
   }
 
@@ -131,7 +133,7 @@ export default class mapPage extends Component {
 
     this.normalMarkerSrc = 'https://s2.ax1x.com/2019/07/04/ZUHKd1.png'
     this.nearastMarkerSrc = 'https://s2.ax1x.com/2019/07/04/ZUOvHH.png'
-    
+
     //沙河校区后台
     Taro.request({
       url: 'http://139.199.26.178:8000/v1/placetype/',
@@ -157,31 +159,31 @@ export default class mapPage extends Component {
         }) //place detail in index 
       })
 
-      //本部校区后台
-      Taro.request({
-        url: 'http://139.199.26.178:8000/v1/placetype/',
-        header: {
-          'accept': 'application/json'
-        },
-        method: 'GET'
-      })
-        .then(res => {
-          let tPlaceTypes = []
-          let tPlaces = new Map();
-          for (let tp of res.data) {
-            if (tp.hasOwnProperty('Places')) {
-              if(tp.Id == 4) break;
-              tPlaceTypes.push({ id: tp.Id, type: tp.Type })
-              tPlaces.set(tp.Id, tp.Places)
-            }
+    //本部校区后台
+    Taro.request({
+      url: 'http://139.199.26.178:8000/v1/placetype/',
+      header: {
+        'accept': 'application/json'
+      },
+      method: 'GET'
+    })
+      .then(res => {
+        let tPlaceTypes = []
+        let tPlaces = new Map();
+        for (let tp of res.data) {
+          if (tp.hasOwnProperty('Places')) {
+            if (tp.Id == 4) break;
+            tPlaceTypes.push({ id: tp.Id, type: tp.Type })
+            tPlaces.set(tp.Id, tp.Places)
           }
-          this.setState({
-            benbucurTypeId: tPlaceTypes[0].id,
-            menuHeight: 7 + res.data.length * 7,
-            benbuplaceTypes: tPlaceTypes,
-            benbuplaces: tPlaces
-          }) //place detail in index 
-        })
+        }
+        this.setState({
+          benbucurTypeId: tPlaceTypes[0].id,
+          menuHeight: 7 + res.data.length * 7,
+          benbuplaceTypes: tPlaceTypes,
+          benbuplaces: tPlaces
+        }) //place detail in index 
+      })
 
 
 
@@ -190,29 +192,30 @@ export default class mapPage extends Component {
 
   //1为本部，2为沙河
   changeCampus(flag) {
-    if(flag == 1) {
+    if (flag == 1) {
       this.setState({
         latitude: this.state.benbulatitude,
-        longitude:this.state.benbulongitude,
+        longitude: this.state.benbulongitude,
         curTypeId: this.state.benbucurTypeId,
-        places:this.state.benbuplaces,
-        placeTypes:this.state.benbuplaceTypes
-      },() => {
+        places: this.state.benbuplaces,
+        placeTypes: this.state.benbuplaceTypes
+      }, () => {
         this.setCurTypePlaces()
       })
     }
     else {
       this.setState({
         latitude: this.state.shahelatitude,
-        longitude:this.state.shahelongitude,
+        longitude: this.state.shahelongitude,
         curTypeId: this.state.shahecurTypeId,
-        places:this.state.shaheplaces,
-        placeTypes:this.state.shaheplaceTypes,
-      },() => {
+        places: this.state.shaheplaces,
+        placeTypes: this.state.shaheplaceTypes,
+      }, () => {
         this.setCurTypePlaces()
       })
     }
   }
+
   componentDidMount() {
     Taro.getSystemInfo().then((res) => {
       console.log(res)
@@ -233,10 +236,10 @@ export default class mapPage extends Component {
         bottomHeight: bottomheight
       }, () => { console.log(this.state.topHeight, this.state.bottomHeight) })
     })
-    Taro.getLocation({ type:"gcj02" }).then (res => {
+    Taro.getLocation({ type: "gcj02" }).then(res => {
       console.log(40690690)
       console.log(res)
-      if((Math.pow(Math.abs(res.latitude - this.state.shahelatitude),2) + Math.pow(Math.abs(res.longitude - this.state.benbulongitude),2)) > (Math.pow(Math.abs(res.latitude - this.state.benbulatitude),2) + Math.pow(Math.abs(res.longitude - this.state.benbulongitude),2))) {
+      if ((Math.pow(Math.abs(res.latitude - this.state.shahelatitude), 2) + Math.pow(Math.abs(res.longitude - this.state.benbulongitude), 2)) > (Math.pow(Math.abs(res.latitude - this.state.benbulatitude), 2) + Math.pow(Math.abs(res.longitude - this.state.benbulongitude), 2))) {
         this.changeCampus(1)
       }
       else {
@@ -247,12 +250,10 @@ export default class mapPage extends Component {
     this.descIntervalId = setInterval(this.describePlaceNearBy.bind(this), 5000)
   }
 
-
-  
   componentWillUnmount() {
     clearInterval(this.descIntervalId)
   }
-  componentDidShow() {}
+  componentDidShow() { }
 
   componentDidHide() { }
 
@@ -282,7 +283,7 @@ export default class mapPage extends Component {
     console.log(e["markerId"])
     console.log(this.state.placeMarkers)
     this.setState({
-      toView: "place" + this.state.placeMarkers[e["markerId"]].Id, 
+      toView: "place" + this.state.placeMarkers[e["markerId"]].Id,
       entryId: e["markerId"],
     })
   }
@@ -334,16 +335,16 @@ export default class mapPage extends Component {
 
   topCampusSelect() {
     this.setState({
-      open:false
+      open: false
     })
   }
 
   bottomCampusSelect() {
     this.setState({
-      open:false,
+      open: false,
       shaheCampus: !this.state.shaheCampus
-    },() => {
-      if(this.state.shaheCampus) {
+    }, () => {
+      if (this.state.shaheCampus) {
         this.changeCampus(2)
       }
       else {
@@ -352,6 +353,14 @@ export default class mapPage extends Component {
     })
 
 
+  }
+
+  changeFunctionClose() {
+    this.setState({
+      functionClose: !this.state.functionClose
+    },() => {
+      console.log(this.state.functionClose)
+    })
   }
   render() {
     return (
@@ -363,7 +372,7 @@ export default class mapPage extends Component {
             <CoverView className="campusDetail" onClick={this.Bar} >
               <CoverView className='campusContainer'>
                 <CoverView className='campusTop'>
-                  <CoverView onClick={this.topCampusSelect}>{shaheCampus ? '沙河校区' : '西土城校区' }</CoverView>
+                  <CoverView onClick={this.topCampusSelect}>{shaheCampus ? '沙河校区' : '西土城校区'}</CoverView>
                   <CoverImage src={xiala} className='xiala' onClick={this.spreadOut}></CoverImage>
                 </CoverView>
                 {this.state.open &&
@@ -373,19 +382,21 @@ export default class mapPage extends Component {
 
             </CoverView>
 
-            <Image src={functionSelect} className="functionSelectImage"></Image>
-            <CoverView className="topBar" style={"height:"+menuHeight+"vh;"} >
-              <CoverView className="placeSelect" style={"height:52vh"} >
-                <CoverView className="placeTypes">
-                  {this.state.placeTypes.map(type => {
-                    return (
-                      <CoverView className={curTypeId == type.id ? "isSelectedPlaceTitle" : "notSelectedPlaceTitle"} id={type.id} onClick={this.placeTypeSelect} key={type}>{type.type}</CoverView>
-                    )
-                  })}
-                </CoverView>
+            <Image src={functionSelect} className="functionSelectImage" onClick={this.changeFunctionClose}></Image>
+            {functionClose &&
+              <CoverView className="topBar" style={"height:" + menuHeight + "vh;"} >
+                <CoverView className="placeSelect" style={"height:52vh"} >
+                  <CoverView className="placeTypes">
+                    {this.state.placeTypes.map(type => {
+                      return (
+                        <CoverView className={curTypeId == type.id ? "isSelectedPlaceTitle" : "notSelectedPlaceTitle"} id={type.id} onClick={this.placeTypeSelect} key={type}>{type.type}</CoverView>
+                      )
+                    })}
+                  </CoverView>
 
-              </CoverView>
-            </CoverView>
+                </CoverView>
+              </CoverView>}
+
             <Image src={vrImage} className="vrImage"></Image>
           </Map>
         </View>
