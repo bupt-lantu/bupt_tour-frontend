@@ -107,8 +107,8 @@ export default class mapPage extends Component {
                   }
                   else if (this.state.curTypePlaces[marker.id].Id == res.data.Id) {
                     marker.iconPath = this.nearastMarkerSrc
-                    marker.width = "35px"
-                    marker.height = "40px"
+                    marker.width = "40px"
+                    marker.height = "50px"
                   }
                 }
                 this.setState({
@@ -131,8 +131,8 @@ export default class mapPage extends Component {
 
   componentWillMount() {
 
-    this.normalMarkerSrc = 'https://s2.ax1x.com/2019/07/04/ZUHKd1.png'
-    this.nearastMarkerSrc = 'https://s2.ax1x.com/2019/07/04/ZUOvHH.png'
+    this.normalMarkerSrc = 'https://s2.ax1x.com/2019/07/10/Zgr740.png'
+    this.nearastMarkerSrc = 'https://s2.ax1x.com/2019/07/10/Zgr740.png'
 
     //沙河校区后台
     Taro.request({
@@ -383,7 +383,9 @@ export default class mapPage extends Component {
             <CoverView className="campusTitle">沙河校区</CoverView>
 
             <CoverView className="rightBar">
-              <CoverImage src={functionSelect} className="functionSelectImage" onClick={this.changeFunctionClose}></CoverImage>
+              <CoverView className="selectContainer" onClick={this.changeFunctionClose}>
+                <CoverImage src={functionSelect} className="functionSelectImage" ></CoverImage>
+              </CoverView>
               {functionClose && (<CoverImage src={triangleWhite} className="triangle_white"></CoverImage>)}
               {functionClose &&
                 (<CoverView className="placeBar" >

@@ -80,10 +80,14 @@
     right: 0;
 }
 
+.selectContainer{
+    display: flex;
+    padding: 55px 1.5vh 0.5vh 1.5vh;
+}
+
 .functionSelectImage {
     width:40px;
     height:40px;
-    padding-top: 3.5vh;
 }
 
 .triangle_white{
