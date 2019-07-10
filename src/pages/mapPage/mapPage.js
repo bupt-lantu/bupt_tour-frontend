@@ -235,16 +235,28 @@ export default class mapPage extends Component {
         bottomHeight: bottomheight
       }, () => { console.log(this.state.topHeight, this.state.bottomHeight) })
     })
-    Taro.getLocation({ type: "gcj02" }).then(res => {
-      console.log(40690690)
-      console.log(res)
-      if ((Math.pow(Math.abs(res.latitude - this.state.shahelatitude), 2) + Math.pow(Math.abs(res.longitude - this.state.benbulongitude), 2)) > (Math.pow(Math.abs(res.latitude - this.state.benbulatitude), 2) + Math.pow(Math.abs(res.longitude - this.state.benbulongitude), 2))) {
-        this.changeCampus(1)
-      }
-      else {
-        this.changeCampus(2)
-      }
-    })
+    // Taro.getLocation({ type: "gcj02" }).then(res => {
+    //   if ((Math.pow(Math.abs(res.latitude - this.state.shahelatitude), 2) + Math.pow(Math.abs(res.longitude - this.state.benbulongitude), 2)) > (Math.pow(Math.abs(res.latitude - this.state.benbulatitude), 2) + Math.pow(Math.abs(res.longitude - this.state.benbulongitude), 2))) {
+    //     this.changeCampus(1)
+    //   }
+    //   else {
+    //     this.changeCampus(2)
+    //   }
+    // })
+    let id = this.$router.params.id
+    id = 1
+    if (id == 1) {
+      this.changeCampus(1)
+      this.setState({
+        shaheCampus: false
+      })
+    }
+    else {
+      this.changeCampus(2)
+      this.setState({
+        shaheCampus: true
+      })
+    }
     // this.mpContext.moveToLocation()
     this.descIntervalId = setInterval(this.describePlaceNearBy.bind(this), 5000)
   }
@@ -357,7 +369,7 @@ export default class mapPage extends Component {
   changeFunctionClose() {
     this.setState({
       functionClose: !this.state.functionClose
-    },() => {
+    }, () => {
       console.log(this.state.functionClose)
     })
   }
@@ -380,7 +392,7 @@ export default class mapPage extends Component {
                 }
               </CoverView>
             </CoverView> */}
-            <CoverView className="campusTitle">沙河校区</CoverView>
+            <CoverView className="campusTitle">{shaheCampus ? '沙河校区' : '西土城校区'}</CoverView>
 
 
             <CoverView className="rightBar">
@@ -396,7 +408,7 @@ export default class mapPage extends Component {
                     )
                   })}
                 </CoverView>)}
-              </CoverView>
+            </CoverView>
 
 
             <CoverImage src={vrImage} className="vrImage"></CoverImage>
