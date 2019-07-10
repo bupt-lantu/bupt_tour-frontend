@@ -4,6 +4,8 @@ import navigationImage from '../../static/navigationImage.png'
 export default class detailPage extends Component {
 
   state = {
+    topImageHeight: 40,
+    bottomHeight: 300,
     placePicSource: "",
     placeTitle: "",
     placeDiscription: "",
@@ -12,7 +14,7 @@ export default class detailPage extends Component {
 
   config = {
     navigationBarTitleText: '地点',
-    disableScroll: true
+    disableScroll: false ,
   }
 
   changeDiscAudioState() {
@@ -26,6 +28,15 @@ export default class detailPage extends Component {
   }
 
   componentWillMount() {
+    Taro.getSystemInfo().then((res) => {
+      let topImageHeight = res.windowWidth * 66.7 /res.windowHeight
+      console.log(topImageHeight)
+      let bottomHeight = 70 - topImageHeight
+      this.setState({
+        bottomHeight: bottomHeight,
+        topImageHeight: topImageHeight
+      })
+    })
     let id = this.$router.params.id
     Taro.request({
       url: 'http://139.199.26.178:8000/v1/place/' + id,
@@ -38,12 +49,11 @@ export default class detailPage extends Component {
         console.log(res)
         //  console.log(res.data.Picture)
         this.setState({
-          longitude:res.data.Longitude,
-          latitude:res.data.Latitude,
+          longitude: res.data.Longitude,
+          latitude: res.data.Latitude,
           placePicSource: res.data.Picture,
           placeTitle: res.data.Title,
-          // placeDiscription: res.data.Desc,
-          placeDiscription: "这是一个描述这是一个描述这是一个描述这是一个描述这是一个描述这是一个描述这是一个描述这是一个描述这是一个描述这是一个描述这是一个描述这是一个描述这是一个描述这是一个描述这是一个描述这是一个描述这是一个描述这是一个描述这是一个描述这是一个描述这是一个描述这是一个描述这是一个描述这是一个描述这是一个描述这是一个描述这是一个描述这是一个描述这是一个描述这是一个描述这是一个描述这是一个描述这是一个描述这是一个描述这是一个描述这是一个描述这是一个描述这是一个描述这是一个描述这是一个描述这是一个描述这是一个描述这是一个描述这是一个描述这是一个描述这是一个描述这是一个描述这是一个描述这是一个描述这是一个描述这是一个描述这是一个描述这是一个描述这是一个描述这是一个描述这是一个描述这是一个描述这是一个描述这是一个描述这是一个描述这是一个描述这是一个描述这是一个描述这是一个描述这是一个描述这是一个描述这是一个描述这是一个描述这是一个描述这是一个描述这是一个描述这是一个描述这是一个描述这是一个描述这是一个描述这是一个描述这是一个描述这是一个描述",
+          placeDiscription: res.data.Desc,
           placeSound: 'http://pr18vapfw.bkt.clouddn.com/' + res.data.Id + '.mp3',
         })
       })
@@ -78,29 +88,31 @@ export default class detailPage extends Component {
   }
   render() {
     return (
-      <View>
-        <Image className="placePicture" src={placePicSource} />
-        <View className="titleGroup">
-          <View className="title">{placeTitle}</View>
-          <Image src={navigationImage} className='navImage' onClick={this.navigate}></Image>
-        </View>
-        <View className="detail">
-          <View className="palyerCountainer">
-            <Audio
-              id="descPlayer"
-              className="player"
-              src={placeSound}
-              controls={true}
-              name={placeTitle}
-              author="SZH233"
-              poster={placePicSource}
-              onClick={this.changeDiscAudioState}
-              className="soundPlayer"
-            />
+      <View >
+        <View className="page">
+          <Image className="placePicture" src={placePicSource} style={"height:" + topImageHeight + "vh"} />
+          <View className="titleGroup">
+            <View className="title">{placeTitle}</View>
+            <Image src={navigationImage} className='navImage' onClick={this.navigate}></Image>
           </View>
-          <ScrollView scrollY className="placeDiscription">
-            <View >{placeDiscription}</View>
-          </ScrollView>
+          <View className="detail">
+            <View className="palyerCountainer">
+              <Audio
+                id="descPlayer"
+                className="player"
+                src={placeSound}
+                controls={true}
+                name={placeTitle}
+                author="SZH233"
+                poster={placePicSource}
+                onClick={this.changeDiscAudioState}
+                className="soundPlayer"
+              />
+            </View>
+
+            <View className="placeDiscription" style={"height:" + bottomHeight + "vh"}>{placeDiscription}</View>
+
+          </View>
         </View>
       </View>
     )

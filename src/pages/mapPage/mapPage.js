@@ -11,7 +11,7 @@ export default class mapPage extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      functionClose: false,
+      functionClose: true,
       menuHeight: 10,
       open: false,
       shaheCampus: true,
@@ -382,6 +382,7 @@ export default class mapPage extends Component {
             </CoverView> */}
             <CoverView className="campusTitle">沙河校区</CoverView>
 
+
             <CoverView className="rightBar">
               <CoverView className="selectContainer" onClick={this.changeFunctionClose}>
                 <CoverImage src={functionSelect} className="functionSelectImage" ></CoverImage>
@@ -396,6 +397,7 @@ export default class mapPage extends Component {
                   })}
                 </CoverView>)}
               </CoverView>
+
 
             <CoverImage src={vrImage} className="vrImage"></CoverImage>
           </Map>

@@ -14,14 +14,11 @@ class App extends Component {
   config = {
     pages: [
       'pages/mapPage/mapPage',
-      
       'pages/detailPage/detailPage',
-      
-     
-      
     ],
     requiredBackgroundModes: ['audio'],
     window: {
+      backgroundColor:"#1564b8",
       backgroundTextStyle: 'light',
       navigationBarBackgroundColor: '#1564B8',
       navigationBarTitleText: 'WeChat',
