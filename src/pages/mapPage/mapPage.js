@@ -10,7 +10,7 @@ export default class mapPage extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      functionClose: false,
+      functionClose: true,
       menuHeight: 10,
       open: false,
       shaheCampus: true,
@@ -382,7 +382,7 @@ export default class mapPage extends Component {
 
             </CoverView>
 
-            <Image src={functionSelect} className="functionSelectImage" onClick={this.changeFunctionClose}></Image>
+            <CoverImage src={functionSelect} className="functionSelectImage" onClick={this.changeFunctionClose}></CoverImage>
             {functionClose &&
               <CoverView className="topBar" style={"height:" + menuHeight + "vh;"} >
                 <CoverView className="placeSelect" style={"height:52vh"} >
@@ -397,7 +397,7 @@ export default class mapPage extends Component {
                 </CoverView>
               </CoverView>}
 
-            <Image src={vrImage} className="vrImage"></Image>
+            <CoverImage src={vrImage} className="vrImage"></CoverImage>
           </Map>
         </View>
         {/* <View className="displaySelect" onClick={this.displayRev} style={"margin-top:" + topHeight + "px"}>共有{this.state.placeNum}个 </View> */}
