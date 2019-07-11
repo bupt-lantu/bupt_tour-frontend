@@ -1,17 +1,18 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, ScrollView, Block, Button, CoverImage } from '@tarojs/components'
 import './mapPage.scss';
-import xiala from '../../static/xiala.png'
+// import jiazizhong from '../../static/jiazizhong.png'
 import triangleWhite from '../../static/triangleWhite.png'
 import navigationImage from '../../static/navigationImage.png'
 import functionSelect from '../../static/functionSelect.png'
 import vrImage from '../../static/vr.png'
+
 export default class mapPage extends Component {
 
   constructor(props) {
     super(props)
     this.state = {
-      functionClose: false,
+      functionClose: true,
       menuHeight: 10,
       open: false,
       shaheCampus: true,
@@ -61,10 +62,10 @@ export default class mapPage extends Component {
           latitude: this.state.curTypePlaces[mk].Latitude,
           longitude: this.state.curTypePlaces[mk].Longitude,
           width: "32.5px",
-          height: "37px"
+          height: "40px"
         })
       }
-      this.setState({ placeMarkers: tempMarkers }, () => { console.log(this.state.placeMarkers) })
+      this.setState({ placeMarkers: tempMarkers })
       // this.setState({ placeNum: this.state.curTypePlaces.length })
     })
   }
@@ -76,73 +77,128 @@ export default class mapPage extends Component {
       entryId: 10000
     }, () => {
       this.setCurTypePlaces()
-      console.log(this.state.curTypeId)
     })
   }
 
   describePlaceNearBy() {
     wx.getLocation({
       type: 'gcj02', success: (loc) => {
-        Taro.request({
-          url: 'http://139.199.26.178:8000/v1/place/match',
-          header: {
-            'accept': 'application/json',
-            'content-type': 'application/x-www-form-urlencoded'
-          },
-          data: {
-            longitude: loc.longitude,
-            latitude: loc.latitude
-          },
-          method: 'POST'
-        })
-          .then(res => {
-            if (res.data.Id != this.state.curDescrPlaceId) {
-              if (Math.abs(res.data.Longitude - loc.longitude) <= 0.0025 && Math.abs(res.data.Latitude - loc.latitude) <= 0.0025) {
-                let tempMarkers = this.state.placeMarkers
-                for (let marker of tempMarkers) {
-                  if (this.state.curTypePlaces[marker.id].Id == this.state.curDescrPlaceId) {
-                    marker.iconPath = this.normalMarkerSrc
-                    marker.width = "32.5px"
-                    marker.height = "37px"
-                  }
-                  else if (this.state.curTypePlaces[marker.id].Id == res.data.Id) {
-                    marker.iconPath = this.nearastMarkerSrc
-                    marker.width = "40px"
-                    marker.height = "50px"
-                  }
-                }
-                this.setState({
-                  curDescrPlaceId: res.data.Id,
-                  placeMarkers: tempMarkers
-                })
-                Taro.getBackgroundAudioManager().title = res.data.Title
-                Taro.getBackgroundAudioManager().src = res.data.Video
+
+        var IDs = -1
+        var flag = 0
+        this.state.places.forEach((item) => {
+
+          //item 为每一个类别
+          item.map((data) => {
+            //data为每个类别中的每一项
+            if (Math.abs(data.Longitude - loc.longitude) <= 0.0011 && Math.abs(data.Latitude - loc.latitude) <= 0.0011) {
+              flag = 1
+              if (this.state.curDescrPlaceId != IDs) {
+                Taro.getBackgroundAudioManager().title = data.Title
+                Taro.getBackgroundAudioManager().src = data.Video
                 Taro.getBackgroundAudioManager().play()
               }
-              else {
-                this.changeMarker(this.state.curDescrPlaceId, this.normalMarkerSrc)
-                this.setState({ curDescrPlaceId: -1 })
+              IDs = data.Id
+
+              let tempMarkers = this.state.placeMarkers
+
+              for (let marker of tempMarkers) {
+                if (this.state.curTypePlaces[marker.id].Id == IDs) {
+                  marker.iconPath = this.nearastMarkerSrc
+                  marker.width = "45px"
+                  marker.height = "60px"
+                }
+                else {
+                  marker.iconPath = this.normalMarkerSrc
+                  marker.width = "32.5px"
+                  marker.height = "40px"
+                }
               }
+              this.setState({
+                curDescrPlaceId: IDs,
+                placeMarkers: tempMarkers
+              })
             }
           })
+        })
+        if (!flag) {
+          this.changeMarker(this.state.curDescrPlaceId, this.normalMarkerSrc)
+          this.setState({ curDescrPlaceId: -1 })
+        }
+
+        // Taro.request({
+        //   url: 'http://139.199.26.178:8000/v1/place/match',
+        //   header: {
+        //     'accept': 'application/json',
+        //     'content-type': 'application/x-www-form-urlencoded'
+        //   },
+        //   data: {
+        //     longitude: loc.longitude,
+        //     latitude: loc.latitude
+        //   },
+        //   method: 'POST'
+        // })
+        //   .then(res => {
+
+
+        // })
       }
     })
   }
 
   componentWillMount() {
+    Taro.getStorage({ key: 'iconPath' }).then((res) => {
+      this.normalMarkerSrc = res.data
+      this.nearastMarkerSrc = res.data
+    })
+    // this.normalMarkerSrc = 'https://s2.ax1x.com/2019/07/10/Zgr740.png'
+    let id = this.$router.params.id
+    if (id == 1) {
+      //本部校区后台
+      Taro.request({
+        url: 'http://139.199.26.178:8000/v1/placetype/',
+        header: {
+          'accept': 'application/json'
+        },
+        method: 'GET'
+      })
+        .then(res => {
+          this.req2 = true
+          let tPlaceTypes = []
+          let tPlaces = new Map();
+          for (let tp of res.data) {
+            if (tp.hasOwnProperty('Places')) {
+              if (tp.Id == 4) break;
+              tPlaceTypes.push({ id: tp.Id, type: tp.Type })
+              tPlaces.set(tp.Id, tp.Places)
+            }
+          }
+          this.setState({
+            benbucurTypeId: tPlaceTypes[0].id,
+            benbuplaceTypes: tPlaceTypes,
+            benbuplaces: tPlaces
+          }, () => {
+            this.changeCampus(1)
+            this.setState({
+              shaheCampus: false
+            })
+          }) //place detail in index 
+        })
 
-    this.normalMarkerSrc = 'https://s2.ax1x.com/2019/07/10/Zgr740.png'
-    this.nearastMarkerSrc = 'https://s2.ax1x.com/2019/07/10/Zgr740.png'
-
-    //沙河校区后台
+    }
+    else {
+      //沙河校区后台
     Taro.request({
       url: 'http://139.199.26.178:8000/v1/placetype/',
       header: {
-        'accept': 'application/json'
+        'accept': 'application/json',
+        'content-type': 'application/json'
+
       },
       method: 'GET'
     })
       .then(res => {
+        this.req1 = true
         let tPlaceTypes = []
         let tPlaces = new Map();
         for (let tp of res.data) {
@@ -156,37 +212,14 @@ export default class mapPage extends Component {
           menuHeight: 7 + res.data.length * 7,
           shaheplaceTypes: tPlaceTypes,
           shaheplaces: tPlaces
+        },() => {
+          this.changeCampus(2)
+          this.setState({
+            shaheCampus: true
+          })
         }) //place detail in index 
       })
-
-    //本部校区后台
-    Taro.request({
-      url: 'http://139.199.26.178:8000/v1/placetype/',
-      header: {
-        'accept': 'application/json'
-      },
-      method: 'GET'
-    })
-      .then(res => {
-        let tPlaceTypes = []
-        let tPlaces = new Map();
-        for (let tp of res.data) {
-          if (tp.hasOwnProperty('Places')) {
-            if (tp.Id == 4) break;
-            tPlaceTypes.push({ id: tp.Id, type: tp.Type })
-            tPlaces.set(tp.Id, tp.Places)
-          }
-        }
-        this.setState({
-          benbucurTypeId: tPlaceTypes[0].id,
-          benbuplaceTypes: tPlaceTypes,
-          benbuplaces: tPlaces
-        }) //place detail in index 
-      })
-
-
-
-    this.mpContext = wx.createMapContext('map')
+    }
   }
 
   //1为本部，2为沙河
@@ -216,8 +249,8 @@ export default class mapPage extends Component {
   }
 
   componentDidMount() {
+    this.mpContext = wx.createMapContext('map')
     Taro.getSystemInfo().then((res) => {
-      console.log(res)
       let topheight = res.windowHeight * 0.6
       let topBarheight = topheight - 35
       if (res.model.search('iPhone X') == -1) {
@@ -227,13 +260,12 @@ export default class mapPage extends Component {
         var bottomheight = res.windowHeight * 0.4 - 133
       }
 
-      console.log(topheight, bottomheight)
       this.setState({
         topBarheight: topBarheight,
         windowHeight: res.windowHeight,
         topHeight: topheight,
         bottomHeight: bottomheight
-      }, () => { console.log(this.state.topHeight, this.state.bottomHeight) })
+      })
     })
     // Taro.getLocation({ type: "gcj02" }).then(res => {
     //   if ((Math.pow(Math.abs(res.latitude - this.state.shahelatitude), 2) + Math.pow(Math.abs(res.longitude - this.state.benbulongitude), 2)) > (Math.pow(Math.abs(res.latitude - this.state.benbulatitude), 2) + Math.pow(Math.abs(res.longitude - this.state.benbulongitude), 2))) {
@@ -243,33 +275,47 @@ export default class mapPage extends Component {
     //     this.changeCampus(2)
     //   }
     // })
-    let id = this.$router.params.id
-    if (id == 1) {
-      this.changeCampus(1)
-      this.setState({
-        shaheCampus: false
-      })
-    }
-    else {
-      this.changeCampus(2)
-      this.setState({
-        shaheCampus: true
-      })
-    }
-    // this.mpContext.moveToLocation()
-    this.descIntervalId = setInterval(this.describePlaceNearBy.bind(this), 5000)
-  }
 
+    // this.mpContext.moveToLocation()
+    // while(!this.req1 || ! this.req2){
+    //   console.log(1);
+    //   this.sleep(300)
+    // }
+    // let id = this.$router.params.id
+    // if (id == 1) {
+    //   this.changeCampus(1)
+    //   this.setState({
+    //     shaheCampus: false
+    //   })
+    // }
+    // else {
+    //   this.changeCampus(2)
+    //   this.setState({
+    //     shaheCampus: true
+    //   })
+    // }
+  }
+  sleep(numberMillis) {
+    var now = new Date();
+    var exitTime = now.getTime() + numberMillis;
+    while (true) {
+      now = new Date();
+      if (now.getTime() > exitTime)
+        return;
+    }
+  }
   componentWillUnmount() {
     clearInterval(this.descIntervalId)
   }
-  componentDidShow() { }
+  componentDidShow() {
+    this.descIntervalId = setInterval(this.describePlaceNearBy.bind(this), 5000)
+
+  }
 
   componentDidHide() { }
 
   jumpToDetail(e)// call this method when select a place from the list to show details
   {
-    console.log(e)
     Taro.navigateTo({
       url: '/pages/detailPage/detailPage?id=' + parseInt(e.currentTarget.id.substr(5))
     })
@@ -289,9 +335,6 @@ export default class mapPage extends Component {
 
   //地图导航界面
   onMarkSelected(e) {
-    console.log(e)
-    console.log(e["markerId"])
-    console.log(this.state.placeMarkers)
     this.setState({
       toView: "place" + this.state.placeMarkers[e["markerId"]].Id,
       entryId: e["markerId"],
@@ -314,7 +357,7 @@ export default class mapPage extends Component {
   }
 
   Bar() {
-    console.log("click")
+
     var animation = Taro.createAnimation({
       transformOrigin: "50% 50%",
       duration: 300,
@@ -338,8 +381,6 @@ export default class mapPage extends Component {
   spreadOut() {
     this.setState({
       open: !this.state.open
-    }, () => {
-      console.log(this.state.shaheCampus)
     })
   }
 
@@ -368,8 +409,6 @@ export default class mapPage extends Component {
   changeFunctionClose() {
     this.setState({
       functionClose: !this.state.functionClose
-    }, () => {
-      console.log(this.state.functionClose)
     })
   }
   render() {

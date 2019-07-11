@@ -2,7 +2,8 @@
     display: flex;
     flex-flow: column wrap;
     overflow-y: scroll ;
-    background-color: rgba(235, 235, 235, 0.3);
+    background-color: rgba(235, 235, 235, 0.5); 
+    // background-color: red;
 }
 .placePicture{
     width: 750px;
@@ -10,20 +11,21 @@
 }
 
 .navImage { 
-    height:40px;
-    width:40px;
+    height:40px; 
+    width:40px;    
 }
 .titleGroup{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
+    background:white; 
+    display: flex; 
+    flex-direction: row;  
+    align-items: center; 
     padding: 4%;
     height: 7vh;
 }
 
 .title{
     padding: 10px;
-    width: 80%;
+    width: 80%; 
     font-size: 40px;
     color: #1564b8;  
 }
@@ -32,21 +34,28 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    padding:50px 40px 30px 40px;
 }
 
-.player {
-    padding-left:50px;
-}
+
 
 .detail{
+    display: flex;
+    flex-flow: column nowrap;
     background-color: rgba(235, 235, 235, 0.3);
-    padding: 7% 5% 5% 5%;
+    
     font-size: 28px;
 }
 
 .placeDiscription{
-    width:608px;
-    padding-left:32px;
+    // background-color: rgba(235, 235, 235, 0.3);
+ 
     
-    padding-top: 3vh;
+    display: flex;
+    flex-flow: column wrap;
+    width:608px;
+    padding-left:70px;;
+    padding-top:30px;
+    
 }
+
