@@ -6,6 +6,24 @@ import triangleWhite from '../../static/triangleWhite.png'
 import navigationImage from '../../static/navigationImage.png'
 import functionSelect from '../../static/functionSelect.png'
 import vrImage from '../../static/vr.png'
+
+function throttle(fn, gapTime = 300) {
+  let lastTime;
+  return function (e) {
+    if (!lastTime) {
+      lastTime = Date.now();
+      fn(e);
+    }
+    else {
+      if (Date.now() - lastTime >= gapTime) {
+        fn(e)
+        lastTime = Date.now();
+      };
+
+    }
+  };
+}
+
 export default class mapPage extends Component {
 
   constructor(props) {
@@ -64,7 +82,7 @@ export default class mapPage extends Component {
           height: "40px"
         })
       }
-      this.setState({ placeMarkers: tempMarkers }, () => { console.log(this.state.placeMarkers) })
+      this.setState({ placeMarkers: tempMarkers })
       // this.setState({ placeNum: this.state.curTypePlaces.length })
     })
   }
@@ -82,7 +100,7 @@ export default class mapPage extends Component {
   describePlaceNearBy() {
     wx.getLocation({
       type: 'gcj02', success: (loc) => {
-        console.log(loc)
+
         var IDs = -1
         var flag = 0
         this.state.places.forEach((item) => {
@@ -98,9 +116,9 @@ export default class mapPage extends Component {
                 Taro.getBackgroundAudioManager().play()
               }
               IDs = data.Id
-              console.log(IDs)
+
               let tempMarkers = this.state.placeMarkers
-              console.log(123, tempMarkers)
+
               for (let marker of tempMarkers) {
                 if (this.state.curTypePlaces[marker.id].Id == IDs) {
                   marker.iconPath = this.nearastMarkerSrc
@@ -116,14 +134,11 @@ export default class mapPage extends Component {
               this.setState({
                 curDescrPlaceId: IDs,
                 placeMarkers: tempMarkers
-              }, () => {
-                console.log(this.state.curDescrPlaceId)
               })
             }
           })
         })
         if (!flag) {
-          console.log("wrong")
           this.changeMarker(this.state.curDescrPlaceId, this.normalMarkerSrc)
           this.setState({ curDescrPlaceId: -1 })
         }
@@ -154,9 +169,42 @@ export default class mapPage extends Component {
       this.nearastMarkerSrc = res.data
     })
     // this.normalMarkerSrc = 'https://s2.ax1x.com/2019/07/10/Zgr740.png'
-    this.nearastMarkerSrc = 'https://s2.ax1x.com/2019/07/10/Zgr740.png'
+    let id = this.$router.params.id
+    if (id == 1) {
+      //本部校区后台
+      Taro.request({
+        url: 'http://139.199.26.178:8000/v1/placetype/',
+        header: {
+          'accept': 'application/json'
+        },
+        method: 'GET'
+      })
+        .then(res => {
+          this.req2 = true
+          let tPlaceTypes = []
+          let tPlaces = new Map();
+          for (let tp of res.data) {
+            if (tp.hasOwnProperty('Places')) {
+              if (tp.Id == 4) break;
+              tPlaceTypes.push({ id: tp.Id, type: tp.Type })
+              tPlaces.set(tp.Id, tp.Places)
+            }
+          }
+          this.setState({
+            benbucurTypeId: tPlaceTypes[0].id,
+            benbuplaceTypes: tPlaceTypes,
+            benbuplaces: tPlaces
+          }, () => {
+            this.changeCampus(1)
+            this.setState({
+              shaheCampus: false
+            })
+          }) //place detail in index 
+        })
 
-    //沙河校区后台
+    }
+    else {
+      //沙河校区后台
     Taro.request({
       url: 'http://139.199.26.178:8000/v1/placetype/',
       header: {
@@ -167,6 +215,7 @@ export default class mapPage extends Component {
       method: 'GET'
     })
       .then(res => {
+        this.req1 = true
         let tPlaceTypes = []
         let tPlaces = new Map();
         for (let tp of res.data) {
@@ -180,38 +229,14 @@ export default class mapPage extends Component {
           menuHeight: 7 + res.data.length * 7,
           shaheplaceTypes: tPlaceTypes,
           shaheplaces: tPlaces
+        },() => {
+          this.changeCampus(2)
+          this.setState({
+            shaheCampus: true
+          })
         }) //place detail in index 
       })
-
-    //本部校区后台
-    Taro.request({
-      url: 'http://139.199.26.178:8000/v1/placetype/',
-      header: {
-        'accept': 'application/json'
-      },
-      method: 'GET'
-    })
-      .then(res => {
-        console.log(res)
-        let tPlaceTypes = []
-        let tPlaces = new Map();
-        for (let tp of res.data) {
-          if (tp.hasOwnProperty('Places')) {
-            if (tp.Id == 4) break;
-            tPlaceTypes.push({ id: tp.Id, type: tp.Type })
-            tPlaces.set(tp.Id, tp.Places)
-          }
-        }
-        this.setState({
-          benbucurTypeId: tPlaceTypes[0].id,
-          benbuplaceTypes: tPlaceTypes,
-          benbuplaces: tPlaces
-        }) //place detail in index 
-      })
-
-
-
-
+    }
   }
 
   //1为本部，2为沙河
@@ -235,8 +260,6 @@ export default class mapPage extends Component {
         places: this.state.shaheplaces,
         placeTypes: this.state.shaheplaceTypes,
       }, () => {
-        console.log(this.state.places)
-        console.log(this.state.placeTypes)
         this.setCurTypePlaces()
       })
     }
@@ -245,7 +268,6 @@ export default class mapPage extends Component {
   componentDidMount() {
     this.mpContext = wx.createMapContext('map')
     Taro.getSystemInfo().then((res) => {
-      console.log(res)
       let topheight = res.windowHeight * 0.6
       let topBarheight = topheight - 35
       if (res.model.search('iPhone X') == -1) {
@@ -255,13 +277,12 @@ export default class mapPage extends Component {
         var bottomheight = res.windowHeight * 0.4 - 133
       }
 
-      console.log(topheight, bottomheight)
       this.setState({
         topBarheight: topBarheight,
         windowHeight: res.windowHeight,
         topHeight: topheight,
         bottomHeight: bottomheight
-      }, () => { console.log(this.state.topHeight, this.state.bottomHeight) })
+      })
     })
     // Taro.getLocation({ type: "gcj02" }).then(res => {
     //   if ((Math.pow(Math.abs(res.latitude - this.state.shahelatitude), 2) + Math.pow(Math.abs(res.longitude - this.state.benbulongitude), 2)) > (Math.pow(Math.abs(res.latitude - this.state.benbulatitude), 2) + Math.pow(Math.abs(res.longitude - this.state.benbulongitude), 2))) {
@@ -273,20 +294,23 @@ export default class mapPage extends Component {
     // })
 
     // this.mpContext.moveToLocation()
-    this.sleep(500)
-    let id = this.$router.params.id
-    if (id == 1) {
-      this.changeCampus(1)
-      this.setState({
-        shaheCampus: false
-      })
-    }
-    else {
-      this.changeCampus(2)
-      this.setState({
-        shaheCampus: true
-      })
-    }
+    // while(!this.req1 || ! this.req2){
+    //   console.log(1);
+    //   this.sleep(300)
+    // }
+    // let id = this.$router.params.id
+    // if (id == 1) {
+    //   this.changeCampus(1)
+    //   this.setState({
+    //     shaheCampus: false
+    //   })
+    // }
+    // else {
+    //   this.changeCampus(2)
+    //   this.setState({
+    //     shaheCampus: true
+    //   })
+    // }
   }
   sleep(numberMillis) {
     var now = new Date();
@@ -301,7 +325,6 @@ export default class mapPage extends Component {
     clearInterval(this.descIntervalId)
   }
   componentDidShow() {
-    console.log(this.state.curDe)
     this.descIntervalId = setInterval(this.describePlaceNearBy.bind(this), 5000)
 
   }
@@ -310,7 +333,6 @@ export default class mapPage extends Component {
 
   jumpToDetail(e)// call this method when select a place from the list to show details
   {
-    console.log(e)
     Taro.navigateTo({
       url: '/pages/detailPage/detailPage?id=' + parseInt(e.currentTarget.id.substr(5))
     })
@@ -330,9 +352,6 @@ export default class mapPage extends Component {
 
   //地图导航界面
   onMarkSelected(e) {
-    console.log(e)
-    console.log(e["markerId"])
-    console.log(this.state.placeMarkers)
     this.setState({
       toView: "place" + this.state.placeMarkers[e["markerId"]].Id,
       entryId: e["markerId"],
@@ -355,7 +374,7 @@ export default class mapPage extends Component {
   }
 
   Bar() {
-    console.log("click")
+
     var animation = Taro.createAnimation({
       transformOrigin: "50% 50%",
       duration: 300,
@@ -379,8 +398,6 @@ export default class mapPage extends Component {
   spreadOut() {
     this.setState({
       open: !this.state.open
-    }, () => {
-      console.log(this.state.shaheCampus)
     })
   }
 
@@ -409,8 +426,6 @@ export default class mapPage extends Component {
   changeFunctionClose() {
     this.setState({
       functionClose: !this.state.functionClose
-    }, () => {
-      console.log(this.state.functionClose)
     })
   }
   render() {

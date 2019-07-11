@@ -9,7 +9,7 @@ export default class detailPage extends Component {
     placePicSource: "",
     placeTitle: "",
     placeDiscription: "",
-    placeSound: ""
+    placeSound: "" 
   }
 
   config = {
