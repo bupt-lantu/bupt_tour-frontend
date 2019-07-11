@@ -1,5 +1,5 @@
 import Taro, { Component } from '@tarojs/taro'
-import { View, Text, Image, Audio, ScrollView } from '@tarojs/components'
+import { View, Text, Image, Audio } from '@tarojs/components'
 import navigationImage from '../../static/navigationImage.png'
 export default class detailPage extends Component {
 
@@ -14,7 +14,7 @@ export default class detailPage extends Component {
 
   config = {
     navigationBarTitleText: '地点',
-    disableScroll: false ,
+    disableScroll: false,
   }
 
   changeDiscAudioState() {
@@ -29,9 +29,9 @@ export default class detailPage extends Component {
 
   componentWillMount() {
     Taro.getSystemInfo().then((res) => {
-      let topImageHeight = res.windowWidth * 66.7 /res.windowHeight
+      let topImageHeight = res.windowWidth * 66.7 / res.windowHeight
       console.log(topImageHeight)
-      let bottomHeight = 70 - topImageHeight
+      let bottomHeight = 90 - topImageHeight
       this.setState({
         bottomHeight: bottomHeight,
         topImageHeight: topImageHeight
@@ -39,7 +39,7 @@ export default class detailPage extends Component {
     })
     let id = this.$router.params.id
     Taro.request({
-      url: 'http://139.199.26.178:8000/v1/place/' + id,
+      url: 'http://139.199.26.178:8000/v1/place/' + 21,
       header: {
         'accept': 'application/json'
       },
@@ -54,6 +54,7 @@ export default class detailPage extends Component {
           placePicSource: res.data.Picture,
           placeTitle: res.data.Title,
           placeDiscription: res.data.Desc,
+          // placeDiscription: "这",
           placeSound: 'http://pr18vapfw.bkt.clouddn.com/' + res.data.Id + '.mp3',
         })
       })
@@ -95,8 +96,8 @@ export default class detailPage extends Component {
             <View className="title">{placeTitle}</View>
             <Image src={navigationImage} className='navImage' onClick={this.navigate}></Image>
           </View>
-          <View className="detail">
-            <View className="palyerCountainer">
+          <View className="detail" style={"height:" + bottomHeight + "vh"}>
+            <View className="palyerCountainer" >
               <Audio
                 id="descPlayer"
                 className="player"
@@ -110,7 +111,11 @@ export default class detailPage extends Component {
               />
             </View>
 
-            <View className="placeDiscription" style={"height:" + bottomHeight + "vh"}>{placeDiscription}</View>
+            <View className="placeDiscription" >
+              
+                {placeDiscription}
+              
+            </View>
 
           </View>
         </View>
