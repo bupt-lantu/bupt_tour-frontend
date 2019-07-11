@@ -4,6 +4,7 @@
     overflow-y: scroll ;
     background-color: rgba(235, 235, 235, 0.5); 
     // background-color: red;
+    
 }
 .placePicture{
     width: 750px;
@@ -11,8 +12,8 @@
 }
 
 .navImage { 
-    height:40px; 
-    width:40px;    
+    height:60px; 
+    width:60px;    
 }
 .titleGroup{
     background:white; 
@@ -34,27 +35,23 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    padding:50px 40px 30px 40px;
+    padding:5vh 5vw 3vh ;
 }
-
-
 
 .detail{
     display: flex;
     flex-flow: column nowrap;
     background-color: rgba(235, 235, 235, 0.3);
-    
     font-size: 28px;
 }
 
 .placeDiscription{
     // background-color: rgba(235, 235, 235, 0.3);
-    word-break:break-all; 
+    word-break: break-all; 
     display: flex;
     flex-flow: column wrap;
-    width:608px;
-    padding-left:70px;;
-    padding-top:30px;
-    
+    width: 608px;
+    padding-left:70px;
+    padding-top: 30px;
 }
 

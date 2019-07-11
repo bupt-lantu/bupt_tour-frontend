@@ -54,7 +54,7 @@ export default class detailPage extends Component {
           placePicSource: res.data.Picture,
           placeTitle: res.data.Title,
           placeDiscription: res.data.Desc,
-          // placeDiscription: "asjdkhlflkjashdljfhajkasjdkhlflkjashdljfhajkshdnfkjashdjkfcjzHBKxgLAAIDGUKAJEwfglIWOIEFHpasjdkhlflkjashdljfhajkshdnfkjashdjkfcjzHBKxgLAAIDGUKAJEwfglIWOIEFHpasjdkhlflkjashdljfhajkshdnfkjashdjkfcjzHBKxgLAAIDGUKAJEwfglIWOIEFHpshdnfkjashdjkfcjzHBKxgLAAIDGUKAJEwfglIWOIEFHp  ",
+          // placeDiscription: "",
           placeSound: 'http://pr18vapfw.bkt.clouddn.com/' + res.data.Id + '.mp3',
         })
       })
@@ -104,7 +104,7 @@ export default class detailPage extends Component {
                 src={placeSound}
                 controls={true}
                 name={placeTitle}
-                author="SZH233"
+                author=""
                 poster={placePicSource}
                 onClick={this.changeDiscAudioState}
                 className="soundPlayer"
