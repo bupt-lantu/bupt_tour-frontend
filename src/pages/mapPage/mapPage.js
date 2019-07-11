@@ -7,23 +7,6 @@ import navigationImage from '../../static/navigationImage.png'
 import functionSelect from '../../static/functionSelect.png'
 import vrImage from '../../static/vr.png'
 
-function throttle(fn, gapTime = 300) {
-  let lastTime;
-  return function (e) {
-    if (!lastTime) {
-      lastTime = Date.now();
-      fn(e);
-    }
-    else {
-      if (Date.now() - lastTime >= gapTime) {
-        fn(e)
-        lastTime = Date.now();
-      };
-
-    }
-  };
-}
-
 export default class mapPage extends Component {
 
   constructor(props) {
