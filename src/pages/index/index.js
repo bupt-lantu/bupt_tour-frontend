@@ -11,7 +11,7 @@ export default class detailPage extends Component {
 
   componentWillMount() { 
     Taro.downloadFile({
-      url:'https://s2.ax1x.com/2019/07/10/Zgr740.png'
+      url:'https://s2.ax1x.com/2019/07/11/ZR0fBj.png'
     }).then((res) => {
       console.log(res)
       Taro.setStorage({

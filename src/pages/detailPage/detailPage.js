@@ -83,9 +83,7 @@ export default class detailPage extends Component {
     params.longitude = this.state.longitude
     params.name = this.state.Title
 
-    Taro.openLocation(params).then((res) => {
-
-    })
+    Taro.openLocation(params)
   }
   render() {
     return (
@@ -104,7 +102,7 @@ export default class detailPage extends Component {
                 src={placeSound}
                 controls={true}
                 name={placeTitle}
-                author="SZH233"
+                author=" "
                 poster={placePicSource}
                 onClick={this.changeDiscAudioState}
                 className="soundPlayer"
