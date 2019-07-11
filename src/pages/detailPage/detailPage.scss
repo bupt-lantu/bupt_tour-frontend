@@ -7,7 +7,7 @@
 }
 .placePicture{
     width: 750px;
-    height:500px;
+    height:500px;    
 }
 
 .navImage { 
@@ -49,8 +49,7 @@
 
 .placeDiscription{
     // background-color: rgba(235, 235, 235, 0.3);
- 
-    
+    word-break:break-all; 
     display: flex;
     flex-flow: column wrap;
     width:608px;

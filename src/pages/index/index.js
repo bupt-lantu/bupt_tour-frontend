@@ -1,6 +1,6 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View} from '@tarojs/components'
-import coverPic from '../../static/cover.jpg'
+import coverPic from '../../static/coverShaHe.jpg'
 export default class detailPage extends Component {
 
   state = { }
@@ -53,8 +53,8 @@ export default class detailPage extends Component {
       <View >
         <Image src={coverPic} className='coverPic'/>
         <View className='buttonContainer'>
-            <View className='visitButton' onClick={this.shahe}>参观西土城校区</View>
-            <View className='visitButton' onClick={this.benbu}>参观沙河校区</View>
+          <View className='visitButton' onClick={this.benbu}>参观沙河校区</View>
+          <View className='visitButton' onClick={this.shahe}>参观西土城校区</View>            
         </View>
       </View>
     )

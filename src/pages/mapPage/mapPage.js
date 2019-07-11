@@ -6,6 +6,7 @@ import triangleWhite from '../../static/triangleWhite.png'
 import navigationImage from '../../static/navigationImage.png'
 import functionSelect from '../../static/functionSelect.png'
 import vrImage from '../../static/vr.png'
+import locate from '../../static/location.png'
 
 export default class mapPage extends Component {
 
@@ -451,6 +452,9 @@ export default class mapPage extends Component {
             {shaheCampus &&
               <CoverImage src={vrImage} className="vrImage"></CoverImage>
             }
+            <CoverView className="locateContainer">
+              <CoverImage src={locate} className="locateIcon"></CoverImage>
+            </CoverView>
           </Map>
         </View>
         {/* <View className="displaySelect" onClick={this.displayRev} style={"margin-top:" + topHeight + "px"}>共有{this.state.placeNum}个 </View> */}

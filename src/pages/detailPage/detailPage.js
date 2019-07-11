@@ -54,7 +54,7 @@ export default class detailPage extends Component {
           placePicSource: res.data.Picture,
           placeTitle: res.data.Title,
           placeDiscription: res.data.Desc,
-          // placeDiscription: "这",
+          // placeDiscription: "asjdkhlflkjashdljfhajkasjdkhlflkjashdljfhajkshdnfkjashdjkfcjzHBKxgLAAIDGUKAJEwfglIWOIEFHpasjdkhlflkjashdljfhajkshdnfkjashdjkfcjzHBKxgLAAIDGUKAJEwfglIWOIEFHpasjdkhlflkjashdljfhajkshdnfkjashdjkfcjzHBKxgLAAIDGUKAJEwfglIWOIEFHpshdnfkjashdjkfcjzHBKxgLAAIDGUKAJEwfglIWOIEFHp  ",
           placeSound: 'http://pr18vapfw.bkt.clouddn.com/' + res.data.Id + '.mp3',
         })
       })

@@ -66,6 +66,22 @@
     height:80px;
     top:45vh;
     left:5vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.locateContainer{
+    position: fixed;
+    bottom: 45vh;
+    right: 5vw;
+    background-color: white;
+    padding: 10px 15px 10px 15px;
+    border-radius: 10px;
+    .locateIcon{
+        width: 30px;
+        height: 40px;
+    }
 }
 
 .rightBar{
@@ -78,49 +94,44 @@
     // background-color: aqua;
     position: fixed;
     right: 0;
-}
+    .selectContainer{
+        display: flex;
+        padding: 55px 1.5vh 0.5vh 1.5vh;
+        .functionSelectImage {
+            width:40px;
+            height:40px;
+        }
+    }
+    .triangle_white{
+        height: 16px;
+        width: 24%;
+        padding-top: 1vh;
+    }
+    .placeBar{
+        background: white;
+        border-radius: 10px;
+        padding: 1vh;
+        flex-direction: column;
+        .notSelectedPlaceTitle{
+            margin:0 5px;
+            padding: 0.5vh;
+            color:rgb(134, 134, 134);
+            font-size: 28px;
+            height: 4vh;
+            width: 16vw;
+            text-align: center;
+        }
+        .isSelectedPlaceTitle{
+            margin:0 5px;
+            padding: 0.5vh;
+            color:rgba(43,100,177);
+            font-size: 28px;
+            height: 4vh;
+            width: 16vw;
+            text-align: center;
+        }
+    } 
 
-.selectContainer{
-    display: flex;
-    padding: 55px 1.5vh 0.5vh 1.5vh;
-}
-
-.functionSelectImage {
-    width:40px;
-    height:40px;
-}
-
-.triangle_white{
-    height: 16px;
-    width: 24%;
-    padding-top: 1vh;
-}
-
-.placeBar{
-    background: white;
-    border-radius: 10px;
-    padding: 1vh;
-    flex-direction: column;
-} 
-
-.notSelectedPlaceTitle{
-    margin:0 5px;
-    padding: 0.5vh;
-    color:rgb(134, 134, 134);
-    font-size: 28px;
-    height: 4vh;
-    width: 16vw;
-    text-align: center;
-}
-
-.isSelectedPlaceTitle{
-    margin:0 5px;
-    padding: 0.5vh;
-    color:rgba(43,100,177);
-    font-size: 28px;
-    height: 4vh;
-    width: 16vw;
-    text-align: center;
 }
 
 .placeDetail{
