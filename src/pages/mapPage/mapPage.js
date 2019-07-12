@@ -88,9 +88,6 @@ export default class mapPage extends Component {
         var IDs = 10000
         var longitude = 10
         var latitude = 10
-        console.log(loc)
-        var flag = 0
-        console.log(this.state.places)
         this.state.places.forEach((item) => {
           //item 为每一个类别
           item.map((data) => {
@@ -258,33 +255,6 @@ export default class mapPage extends Component {
         bottomHeight: bottomheight
       })
     })
-    // Taro.getLocation({ type: "gcj02" }).then(res => {
-    //   if ((Math.pow(Math.abs(res.latitude - this.state.shahelatitude), 2) + Math.pow(Math.abs(res.longitude - this.state.benbulongitude), 2)) > (Math.pow(Math.abs(res.latitude - this.state.benbulatitude), 2) + Math.pow(Math.abs(res.longitude - this.state.benbulongitude), 2))) {
-    //     this.changeCampus(1)
-    //   }
-    //   else {
-    //     this.changeCampus(2)
-    //   }
-    // })
-
-    // this.mpContext.moveToLocation()
-    // while(!this.req1 || ! this.req2){
-    //   console.log(1);
-    //   this.sleep(300)
-    // }
-    // let id = this.$router.params.id
-    // if (id == 1) {
-    //   this.changeCampus(1)
-    //   this.setState({
-    //     shaheCampus: false
-    //   })
-    // }
-    // else {
-    //   this.changeCampus(2)
-    //   this.setState({
-    //     shaheCampus: true
-    //   })
-    // }
   }
   sleep(numberMillis) {
     var now = new Date();
