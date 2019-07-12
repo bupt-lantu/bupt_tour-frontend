@@ -84,72 +84,54 @@ export default class mapPage extends Component {
   describePlaceNearBy() {
     wx.getLocation({
       type: 'gcj02', success: (loc) => {
-
+        var dis = 10000
+        var IDs = 10000
+        var longitude = 10
+        var latitude = 10
         console.log(loc)
         var flag = 0
         console.log(this.state.places)
         this.state.places.forEach((item) => {
-
           //item 为每一个类别
           item.map((data) => {
             //data为每个类别中的每一项
-            if (Math.abs(data.Longitude - loc.longitude) <= 0.0011 && Math.abs(data.Latitude - loc.latitude) <= 0.0011) {
-              flag = 1
-              console.log(this.state.curDescrPlaceId, data.Id)
-              if (this.state.curDescrPlaceId != data.Id) {
-                console.log(99999999999999999)
-                Taro.getBackgroundAudioManager().title = data.Title
-                Taro.getBackgroundAudioManager().src = data.Video
-                Taro.getBackgroundAudioManager().play()
-                var IDs = data.Id
-                let tempMarkers = this.state.placeMarkers
-
-                for (let marker of tempMarkers) {
-                  if (this.state.curTypePlaces[marker.id].Id == IDs) {
-                    console.log(12312312312)
-                    marker.iconPath = this.nearastMarkerSrc
-                    marker.width = "55px"
-                    marker.height = "55px"
-                  }
-                  else {
-                    marker.iconPath = this.normalMarkerSrc
-                    marker.width = "40px"
-                    marker.height = "40px"
-                  }
-                }
-                this.setState({
-                  curDescrPlaceId: IDs,
-                  placeMarkers: tempMarkers
-                }, () => {
-                  console.log(11111111, this.state.curDescrPlaceId)
-                })
-              }
-
-
+            let temp = Math.pow(Math.abs(data.Longitude - loc.longitude), 2) + Math.pow(Math.abs(data.Latitude - loc.latitude), 2)
+            if (temp < dis) {
+              dis = temp
+              IDs = data.Id
+              longitude = data.Longitude
+              latitude = data.Latitude
+              Taro.getBackgroundAudioManager().title = data.Title
+              Taro.getBackgroundAudioManager().src = data.Video
             }
           })
         })
-        if (!flag) {
-          this.changeMarker(this.state.curDescrPlaceId, this.normalMarkerSrc)
-          this.setState({ curDescrPlaceId: -1 })
+        if (this.state.curDescrPlaceId != IDs) {
+          if (Math.abs(longitude - loc.longitude) <= 0.0025 && Math.abs(latitude - loc.latitude) <= 0.0025) {
+            let tempMarkers = this.state.placeMarkers
+            for (let marker of tempMarkers) {
+              if (this.state.curTypePlaces[marker.id].Id == this.state.curDescrPlaceId) {
+                marker.iconPath = this.normalMarkerSrc
+                marker.width = "40px"
+                marker.height = "40px"
+              }
+              else if (this.state.curTypePlaces[marker.id].Id == IDs) {
+                marker.iconPath = this.nearastMarkerSrc
+                marker.width = "50px"
+                marker.height = "50px"
+              }
+            }
+            this.setState({
+              curDescrPlaceId: IDs,
+              placeMarkers: tempMarkers
+            })
+            Taro.getBackgroundAudioManager().play()
+          }
+          else {
+            this.changeMarker(this.state.curDescrPlaceId, this.normalMarkerSrc)
+            this.setState({ curDescrPlaceId: -1 })
+          }
         }
-
-        // Taro.request({
-        //   url: 'http://139.199.26.178:8000/v1/place/match',
-        //   header: {
-        //     'accept': 'application/json',
-        //     'content-type': 'application/x-www-form-urlencoded'
-        //   },
-        //   data: {
-        //     longitude: loc.longitude,
-        //     latitude: loc.latitude
-        //   },
-        //   method: 'POST'
-        // })
-        //   .then(res => {
-
-
-        // })
       }
     })
   }

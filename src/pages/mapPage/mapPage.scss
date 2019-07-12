@@ -74,13 +74,18 @@
 .locateContainer{
     position: fixed;
     bottom: 45vh;
-    right: 5vw;
+    right: 7vw;
+    width:80px;
+    height:80px;
     background-color: white;
-    padding: 10px 15px 10px 15px;
-    border-radius: 10px;
+    // padding: 10px 15px 10px 15px;
+    border-radius: 15px;
+    // text-align:center
     .locateIcon{
-        width: 30px;
-        height: 40px;
+        padding-left:24px;
+        padding-top:19px;
+        width: 32px;
+        height: 42px;
     }
 }
 
@@ -98,8 +103,8 @@
         display: flex;
         padding: 55px 1.5vh 0.5vh 1.5vh;
         .functionSelectImage {
-            width:40px;
-            height:40px;
+            width:50px;
+            height:50px;
         }
     }
     .triangle_white{
