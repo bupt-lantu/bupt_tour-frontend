@@ -39,7 +39,7 @@ export default class detailPage extends Component {
     })
     let id = this.$router.params.id
     Taro.request({
-      url: 'http://139.199.26.178:8000/v1/place/' + 21,
+      url: 'https://dmsh.bupt.edu.cn/shahe_v1/place/' + id,
       header: {
         'accept': 'application/json'
       },
@@ -47,23 +47,24 @@ export default class detailPage extends Component {
     })
       .then((res) => {
         console.log(res)
-        //  console.log(res.data.Picture)
         this.setState({
           longitude: res.data.Longitude,
           latitude: res.data.Latitude,
-          placePicSource: res.data.Picture,
+          placePicSource: 'https://dmsh.bupt.edu.cn/files/'+res.data.Picture,
           placeTitle: res.data.Title,
           placeDiscription: res.data.Desc,
-          // placeDiscription: "这",
-          placeSound: 'http://pr18vapfw.bkt.clouddn.com/' + res.data.Id + '.mp3',
+          // placeDiscription: "asjdkhlflkjashdljfhajkasjdkhlflkjashdljfhajkshdnfkjashdjkfcjzHBKxgLAAIDGUKAJEwfglIWOIEFHpasjdkhlflkjashdljfhajkshdnfkjashdjkfcjzHBKxgLAAIDGUKAJEwfglIWOIEFHpasjdkhlflkjashdljfhajkshdnfkjashdjkfcjzHBKxgLAAIDGUKAJEwfglIWOIEFHpshdnfkjashdjkfcjzHBKxgLAAIDGUKAJEwfglIWOIEFHp  ",
+          placeSound: 'https://dmsh.bupt.edu.cn/files/' + res.data.Video,
+        },() => {
+          this.descAudioContext = wx.createAudioContext('descPlayer')
+          this.descAudioContext.src = this.state.placeSound
+          this.audioPlaying = false
         })
       })
   }
 
   componentDidMount() {
-    this.descAudioContext = wx.createAudioContext('descPlayer')
-    this.descAudioContext.src = this.state.placeSound
-    this.audioPlaying = false
+   
   }
 
   componentWillUnmount() { }
@@ -83,9 +84,7 @@ export default class detailPage extends Component {
     params.longitude = this.state.longitude
     params.name = this.state.Title
 
-    Taro.openLocation(params).then((res) => {
-
-    })
+    Taro.openLocation(params)
   }
   render() {
     return (
@@ -104,7 +103,7 @@ export default class detailPage extends Component {
                 src={placeSound}
                 controls={true}
                 name={placeTitle}
-                author="SZH233"
+                author=' '
                 poster={placePicSource}
                 onClick={this.changeDiscAudioState}
                 className="soundPlayer"

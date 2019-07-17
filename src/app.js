@@ -15,7 +15,6 @@ class App extends Component {
     pages: [
       'pages/index/index',
       'pages/detailPage/detailPage',
-      
       'pages/mapPage/mapPage',
       
     ],

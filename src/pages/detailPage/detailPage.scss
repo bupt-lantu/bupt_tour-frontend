@@ -7,18 +7,18 @@
 }
 .placePicture{
     width: 750px;
-    height:500px;
-}
+    height:500px;     
+} 
 
 .navImage { 
     height:40px; 
     width:40px;    
 }
-.titleGroup{
-    background:white; 
-    display: flex; 
+.titleGroup{ 
+    background:white;  
+    display: flex;  
     flex-direction: row;  
-    align-items: center; 
+    align-items: center;  
     padding: 4%;
     height: 7vh;
 }
@@ -49,8 +49,7 @@
 
 .placeDiscription{
     // background-color: rgba(235, 235, 235, 0.3);
- 
-    
+    word-break:break-all; 
     display: flex;
     flex-flow: column wrap;
     width:608px;
