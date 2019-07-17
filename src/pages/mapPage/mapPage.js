@@ -133,107 +133,87 @@ export default class mapPage extends Component {
     })
   }
 
+  request(id) {
+    if (id == 1) {
+      this.setState({
+        shaheCampus: false,
+        latitude: this.state.benbulatitude,
+        longitude: this.state.benbulongitude,
+      })
+    }
+    var url = " "
+    id == 1 ? url = "https://dmsh.bupt.edu.cn/xituc_v1/place" : url = 'https://dmsh.bupt.edu.cn/shahe_v1/place'
+    Taro.request({
+      url: url,
+      header: {
+        'accept': 'application/json'
+      },
+      method: 'GET'
+    }).then(res => {
+      console.log(res)
+      let tPlaceTypes = []
+      let tPlaces = new Map()
+      let tempPlaces = []
+      for (let tp of res.data) {
+        let flag = 1
+        for (let item of tPlaceTypes) {
+          if (item.id == tp.PlaceType["Id"]) {
+            flag = 0
+            break
+          }
+        }
+        if (flag)
+          tPlaceTypes.push({ id: tp.PlaceType["Id"], type: tp.PlaceType["Type"] })
+        tempPlaces = tPlaces.get(tp.PlaceType["Id"])
+        if (!tempPlaces) {
+          tempPlaces = []
+        }
+        tempPlaces.push(tp)
+        tPlaces.set(tp.PlaceType["Id"], tempPlaces)
+        this.setState({
+          menuHeight: 7 + res.data.length * 7,
+          curTypeId: tPlaceTypes[0].id,
+          places: tPlaces,
+          placeTypes: tPlaceTypes,
+        }, () => {
+          this.setCurTypePlaces()
+        }) //place detail in index 
+      }
+    })
+  }
   componentWillMount() {
     Taro.getStorage({ key: 'iconPath' }).then((res) => {
       this.normalMarkerSrc = res.data
       this.nearastMarkerSrc = res.data
     })
-    // this.normalMarkerSrc = 'https://s2.ax1x.com/2019/07/10/Zgr740.png'
-    let id = this.$router.params.id
-    if (id == 1) {
-      //本部校区后台
-      Taro.request({
-        url: 'http://139.199.26.178:8000/v1/placetype/',
-        header: {
-          'accept': 'application/json'
-        },
-        method: 'GET'
-      })
-        .then(res => {
-          this.req2 = true
-          let tPlaceTypes = []
-          let tPlaces = new Map();
-          for (let tp of res.data) {
-            if (tp.hasOwnProperty('Places')) {
-              if (tp.Id == 4) break;
-              tPlaceTypes.push({ id: tp.Id, type: tp.Type })
-              tPlaces.set(tp.Id, tp.Places)
-            }
-          }
-          this.setState({
-            benbucurTypeId: tPlaceTypes[0].id,
-            benbuplaceTypes: tPlaceTypes,
-            benbuplaces: tPlaces
-          }, () => {
-            this.changeCampus(1)
-            this.setState({
-              shaheCampus: false
-            })
-          }) //place detail in index 
-        })
-
-    }
-    else {
-      //沙河校区后台
-      Taro.request({
-        url: 'http://139.199.26.178:8000/v1/placetype/',
-        header: {
-          'accept': 'application/json',
-          'content-type': 'application/json'
-
-        },
-        method: 'GET'
-      })
-        .then(res => {
-          this.req1 = true
-          let tPlaceTypes = []
-          let tPlaces = new Map();
-          for (let tp of res.data) {
-            if (tp.hasOwnProperty('Places')) {
-              tPlaceTypes.push({ id: tp.Id, type: tp.Type })
-              tPlaces.set(tp.Id, tp.Places)
-            }
-          }
-          this.setState({
-            shahecurTypeId: tPlaceTypes[0].id,
-            menuHeight: 7 + res.data.length * 7,
-            shaheplaceTypes: tPlaceTypes,
-            shaheplaces: tPlaces
-          }, () => {
-            this.changeCampus(2)
-            this.setState({
-              shaheCampus: true
-            })
-          }) //place detail in index 
-        })
-    }
+    this.request(this.$router.params.id)
   }
 
   //1为本部，2为沙河
-  changeCampus(flag) {
-    if (flag == 1) {
-      this.setState({
-        latitude: this.state.benbulatitude,
-        longitude: this.state.benbulongitude,
-        curTypeId: this.state.benbucurTypeId,
-        places: this.state.benbuplaces,
-        placeTypes: this.state.benbuplaceTypes
-      }, () => {
-        this.setCurTypePlaces()
-      })
-    }
-    else {
-      this.setState({
-        latitude: this.state.shahelatitude,
-        longitude: this.state.shahelongitude,
-        curTypeId: this.state.shahecurTypeId,
-        places: this.state.shaheplaces,
-        placeTypes: this.state.shaheplaceTypes,
-      }, () => {
-        this.setCurTypePlaces()
-      })
-    }
-  }
+  // changeCampus(flag) {
+  //   if (flag == 1) {
+  //     this.setState({
+  //       latitude: this.state.benbulatitude,
+  //       longitude: this.state.benbulongitude,
+  //       curTypeId: this.state.benbucurTypeId,
+  //       places: this.state.benbuplaces,
+  //       placeTypes: this.state.benbuplaceTypes
+  //     }, () => {
+  //       this.setCurTypePlaces()
+  //     })
+  //   }
+  //   else {
+  //     this.setState({
+  //       latitude: this.state.shahelatitude,
+  //       longitude: this.state.shahelongitude,
+  //       curTypeId: this.state.shahecurTypeId,
+  //       places: this.state.shaheplaces,
+  //       placeTypes: this.state.shaheplaceTypes,
+  //     }, () => {
+  //       this.setCurTypePlaces()
+  //     })
+  //   }
+  // }
   mpContext = null
   componentDidMount() {
     this.mpContext = wx.createMapContext('map')
@@ -429,7 +409,7 @@ export default class mapPage extends Component {
             return (
               <View className={this.state.entryId == index ? "detailGroupActive" : "detailGroup"} >
                 <View className="placePicHolder" id={"place" + detail.Id} onClick={this.jumpToDetail}>
-                  <Image className="placePic" src={detail.Picture} />
+                  <Image className="placePic" src={"https://dmsh.bupt.edu.cn/files/" + detail.Picture} />
                   <View className="placeTitle" >{detail.Title}</View>
                 </View>
                 <Image className="navigationImage" src={navigationImage} onClick={this.navigate.bind(this, index)}></Image>
