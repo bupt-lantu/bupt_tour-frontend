@@ -18,7 +18,7 @@
 .campusDetail{
     margin:"2.5vh";
     position:fixed;
-    top:0;
+    top:0; 
     left:0;
     width:200px;
     margin-left:10px;
@@ -64,8 +64,8 @@
     position: fixed;
     width:80px;
     height:80px;
-    top:45vh;
-    left:5vw;
+    top:50vh;
+    left:80vw;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -73,8 +73,8 @@
 
 .locateContainer{
     position: fixed;
-    bottom: 45vh;
-    right: 7vw;
+    bottom: 44vh;
+    left:5vw;
     width:80px;
     height:80px;
     background-color: white;

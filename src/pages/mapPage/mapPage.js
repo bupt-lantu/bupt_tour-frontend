@@ -62,15 +62,14 @@ export default class mapPage extends Component {
           iconPath: this.state.curTypePlaces[mk].Id == this.state.curDescrPlaceId ? this.nearastMarkerSrc : this.normalMarkerSrc,
           latitude: this.state.curTypePlaces[mk].Latitude,
           longitude: this.state.curTypePlaces[mk].Longitude,
-          width: "40px",
-          height: "40px"
+          width: "35px",
+          height: "35px"
         })
       }
       this.setState({ placeMarkers: tempMarkers })
       // this.setState({ placeNum: this.state.curTypePlaces.length })
     })
   }
-
 
   placeTypeSelect(e) {
     this.setState({
@@ -82,13 +81,17 @@ export default class mapPage extends Component {
   }
 
   describePlaceNearBy() {
+    const backgroundAudioManager = Taro.getBackgroundAudioManager()
     wx.getLocation({
       type: 'gcj02', success: (loc) => {
         var dis = 10000
         var IDs = 10000
         var longitude = 10
         var latitude = 10
+        var title = ''
+        var src = ''
         this.state.places.forEach((item) => {
+          console.log(this.state.places)
           //item 为每一个类别
           item.map((data) => {
             //data为每个类别中的每一项
@@ -98,36 +101,42 @@ export default class mapPage extends Component {
               IDs = data.Id
               longitude = data.Longitude
               latitude = data.Latitude
-              Taro.getBackgroundAudioManager().title = data.Title
-              Taro.getBackgroundAudioManager().src = data.Video
+
+              title = data.Title
+              src = data.Video
+
             }
           })
         })
-        if (this.state.curDescrPlaceId != IDs) {
-          if (Math.abs(longitude - loc.longitude) <= 0.0025 && Math.abs(latitude - loc.latitude) <= 0.0025) {
-            let tempMarkers = this.state.placeMarkers
-            for (let marker of tempMarkers) {
-              if (this.state.curTypePlaces[marker.id].Id == this.state.curDescrPlaceId) {
-                marker.iconPath = this.normalMarkerSrc
-                marker.width = "40px"
-                marker.height = "40px"
-              }
-              else if (this.state.curTypePlaces[marker.id].Id == IDs) {
-                marker.iconPath = this.nearastMarkerSrc
-                marker.width = "50px"
-                marker.height = "50px"
-              }
+        
+        if (Math.abs(longitude - loc.longitude) <= 0.0025 && Math.abs(latitude - loc.latitude) <= 0.0025) {
+          if (this.state.curDescrPlaceId != IDs) {
+            console.log(1232131312)
+            backgroundAudioManager.title = title
+            backgroundAudioManager.src = 'https://dmsh.bupt.edu.cn/files/' + src
+            backgroundAudioManager.play()
+          }
+          let tempMarkers = this.state.placeMarkers
+          for (let marker of tempMarkers) {
+            if (this.state.curTypePlaces[marker.id].Id == IDs) {
+              marker.iconPath = this.nearastMarkerSrc
+              marker.width = "40px"
+              marker.height = "40px"
             }
-            this.setState({
-              curDescrPlaceId: IDs,
-              placeMarkers: tempMarkers
-            })
-            Taro.getBackgroundAudioManager().play()
+            else if (this.state.curTypePlaces[marker.id].Id == this.state.curDescrPlaceId) {
+              marker.iconPath = this.normalMarkerSrc
+              marker.width = "35px"
+              marker.height = "35px"
+            }
           }
-          else {
-            this.changeMarker(this.state.curDescrPlaceId, this.normalMarkerSrc)
-            this.setState({ curDescrPlaceId: -1 })
-          }
+          this.setState({
+            curDescrPlaceId: IDs,
+            placeMarkers: tempMarkers
+          })
+        }
+        else {
+          this.changeMarker(this.state.curDescrPlaceId, this.normalMarkerSrc)
+          this.setState({ curDescrPlaceId: -1 })
         }
       }
     })
@@ -142,13 +151,15 @@ export default class mapPage extends Component {
       })
     }
     var url = " "
-    id == 1 ? url = "https://dmsh.bupt.edu.cn/xituc_v1/place" : url = 'https://dmsh.bupt.edu.cn/shahe_v1/place'
+    id == 1 ? url = "https://dmsh.bupt.edu.cn/xituc_v1/place?sortby=PlaceType&order=asc" : url = 'https://dmsh.bupt.edu.cn/shahe_v1/place?sortby=PlaceType&order=asc'
     Taro.request({
       url: url,
       header: {
-        'accept': 'application/json'
+        'accept': 'application/json',
+        
       },
-      method: 'GET'
+      method: 'GET',
+      sortby: 'PlaceType'
     }).then(res => {
       console.log(res)
       let tPlaceTypes = []
@@ -182,38 +193,15 @@ export default class mapPage extends Component {
     })
   }
   componentWillMount() {
-    Taro.getStorage({ key: 'iconPath' }).then((res) => {
+    Taro.getStorage({ key: 'normalMarkerSrc' }).then((res) => {
       this.normalMarkerSrc = res.data
+    })
+    Taro.getStorage({ key: 'nearastMarkerSrc' }).then((res) => {
       this.nearastMarkerSrc = res.data
     })
     this.request(this.$router.params.id)
   }
 
-  //1为本部，2为沙河
-  // changeCampus(flag) {
-  //   if (flag == 1) {
-  //     this.setState({
-  //       latitude: this.state.benbulatitude,
-  //       longitude: this.state.benbulongitude,
-  //       curTypeId: this.state.benbucurTypeId,
-  //       places: this.state.benbuplaces,
-  //       placeTypes: this.state.benbuplaceTypes
-  //     }, () => {
-  //       this.setCurTypePlaces()
-  //     })
-  //   }
-  //   else {
-  //     this.setState({
-  //       latitude: this.state.shahelatitude,
-  //       longitude: this.state.shahelongitude,
-  //       curTypeId: this.state.shahecurTypeId,
-  //       places: this.state.shaheplaces,
-  //       placeTypes: this.state.shaheplaceTypes,
-  //     }, () => {
-  //       this.setCurTypePlaces()
-  //     })
-  //   }
-  // }
   mpContext = null
   componentDidMount() {
     this.mpContext = wx.createMapContext('map')
@@ -236,18 +224,11 @@ export default class mapPage extends Component {
       })
     })
   }
-  sleep(numberMillis) {
-    var now = new Date();
-    var exitTime = now.getTime() + numberMillis;
-    while (true) {
-      now = new Date();
-      if (now.getTime() > exitTime)
-        return;
-    }
-  }
+
   componentWillUnmount() {
     clearInterval(this.descIntervalId)
   }
+
   componentDidShow() {
     this.descIntervalId = setInterval(this.describePlaceNearBy.bind(this), 5000)
 
@@ -266,7 +247,6 @@ export default class mapPage extends Component {
     let tempmarkers = this.state.placeMarkers;
     for (let marker of tempmarkers) {
       if (this.state.curTypePlaces[marker.id].Id == id) {
-
         marker.iconPath = src
         break
       }
@@ -297,56 +277,6 @@ export default class mapPage extends Component {
     Taro.openLocation(params)
   }
 
-  Bar() {
-
-    var animation = Taro.createAnimation({
-      transformOrigin: "50% 50%",
-      duration: 300,
-      timingFunction: "ease-in",
-      delay: 0
-    })
-    if (this.state.close) {
-      animation.translate(0, 0).step();
-    }
-    else {
-      animation.translate(-200, 0).step();
-    }
-
-    this.setState({
-      animationData: animation.export(),
-      close: !this.state.close
-    })
-
-  }
-
-  spreadOut() {
-    this.setState({
-      open: !this.state.open
-    })
-  }
-
-  topCampusSelect() {
-    this.setState({
-      open: false
-    })
-  }
-
-  bottomCampusSelect() {
-    this.setState({
-      open: false,
-      shaheCampus: !this.state.shaheCampus
-    }, () => {
-      if (this.state.shaheCampus) {
-        this.changeCampus(2)
-      }
-      else {
-        this.changeCampus(1)
-      }
-    })
-
-
-  }
-
   changeFunctionClose() {
     this.setState({
       functionClose: !this.state.functionClose
@@ -360,26 +290,10 @@ export default class mapPage extends Component {
   }
   render() {
     return (
-
       <View>
         <View className="top">
-
           <Map className="Map" latitude={latitude} longitude={longitude} id='map' show-location markers={this.state.placeMarkers} onmarkertap={this.onMarkSelected} style={"height:" + topHeight + "px"} >
-            {/* 不在这个页面选择校区 */}
-            {/* <CoverView className="campusDetail" onClick={this.Bar} >
-              <CoverView className='campusContainer'>
-                <CoverView className='campusTop'>
-                  <CoverView onClick={this.topCampusSelect}>{shaheCampus ? '沙河校区' : '西土城校区'}</CoverView>
-                  <CoverImage src={xiala} className='xiala' onClick={this.spreadOut}></CoverImage>
-                </CoverView>
-                {this.state.open &&
-                  <CoverView onClick={this.bottomCampusSelect}>{shaheCampus ? '西土城校区' : '沙河校区'}</CoverView>
-                }
-              </CoverView>
-            </CoverView> */}
             <CoverView className="campusTitle">{shaheCampus ? '沙河校区' : '西土城校区'}</CoverView>
-
-
             <CoverView className="rightBar">
               <CoverView className="selectContainer" onClick={this.changeFunctionClose}>
                 <CoverImage src={functionSelect} className="functionSelectImage" ></CoverImage>
@@ -403,8 +317,8 @@ export default class mapPage extends Component {
             </CoverView>
           </Map>
         </View>
-        {/* <View className="displaySelect" onClick={this.displayRev} style={"margin-top:" + topHeight + "px"}>共有{this.state.placeNum}个 </View> */}
-        <ScrollView scrollIntoView={toView} scrollWithAnimation="true" scrollY="true" style={{ position: "fixed", height: '40vh', bottom: 0, borderTop: "solid 2rpx lightgray" }}>
+
+       <ScrollView scrollIntoView={toView} scrollWithAnimation="true" scrollY="true" style={{ position: "fixed", height: '40vh', bottom: 0, borderTop: "solid 2rpx lightgray" }}>
           {this.state.curTypePlaces.map((detail, index) => {
             return (
               <View className={this.state.entryId == index ? "detailGroupActive" : "detailGroup"} >

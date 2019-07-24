@@ -1,6 +1,8 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View} from '@tarojs/components'
-import coverPic from '../../static/coverShaHe.jpg'
+import coverPic from '../../static/cover.jpg'
+import shahee from '../../static/shahe.png'
+import benbuu from '../../static/xituc.png'
 export default class detailPage extends Component {
 
   state = { }
@@ -14,18 +16,20 @@ export default class detailPage extends Component {
       url:'https://dmsh.bupt.edu.cn/files/ZR0fBj.png'
     }).then((res) => {
       console.log(res)
-      Taro.setStorage({
-        key:"iconPath",
+      Taro.setStorage({ 
+        key:"nearastMarkerSrc",
         data:res.tempFilePath
       })
     })
-    // Taro.request({
-    //   url: 'https://s2.ax1x.com/2019/07/10/Zgr740.png',
-    //   header: {
-    //     'accept': 'application/json'
-    //   },
-    //   method: 'GET'
-    // })
+    Taro.downloadFile({
+      url:'https://dmsh.bupt.edu.cn/files/simplePlace.png'
+    }).then((res) => {
+      console.log(res)
+      Taro.setStorage({ 
+        key:"normalMarkerSrc",
+        data:res.tempFilePath
+      })
+    })
   }
 
   componentDidMount() { }
@@ -52,10 +56,8 @@ export default class detailPage extends Component {
     return (
       <View >
         <Image src={coverPic} className='coverPic'/>
-        <View className='buttonContainer'>
-          <View className='visitButton' onClick={this.benbu}>参观沙河校区</View>
-          <View className='visitButton' onClick={this.shahe}>参观西土城校区</View>            
-        </View>
+        <Image src={benbuu} className='xituc' onClick={this.shahe}></Image>
+        <Image src={shahee} className='shahe' onClick={this.benbu}></Image>
       </View>
     )
   }
