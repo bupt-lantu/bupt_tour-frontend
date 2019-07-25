@@ -43,6 +43,7 @@ export default class mapPage extends Component {
       longitude: 116.288179,
       entryId: 100000,
       topBarheight: 400,
+      currentTitle:"",
     }
   }
 
@@ -62,8 +63,8 @@ export default class mapPage extends Component {
           iconPath: this.state.curTypePlaces[mk].Id == this.state.curDescrPlaceId ? this.nearastMarkerSrc : this.normalMarkerSrc,
           latitude: this.state.curTypePlaces[mk].Latitude,
           longitude: this.state.curTypePlaces[mk].Longitude,
-          width: "35px",
-          height: "35px"
+          width: "32px",
+          height: "32px"
         })
       }
       this.setState({ placeMarkers: tempMarkers })
@@ -79,9 +80,9 @@ export default class mapPage extends Component {
       this.setCurTypePlaces()
     })
   }
-
+  backgroundAudioManager = Taro.getBackgroundAudioManager()
   describePlaceNearBy() {
-    const backgroundAudioManager = Taro.getBackgroundAudioManager()
+    
     wx.getLocation({
       type: 'gcj02', success: (loc) => {
         var dis = 10000
@@ -90,10 +91,10 @@ export default class mapPage extends Component {
         var latitude = 10
         var title = ''
         var src = ''
-        this.state.places.forEach((item) => {
-          console.log(this.state.places)
+        this.state.allPlaces.forEach((data) => {
           //item 为每一个类别
-          item.map((data) => {
+          
+            console.log(data)
             //data为每个类别中的每一项
             let temp = Math.pow(Math.abs(data.Longitude - loc.longitude), 2) + Math.pow(Math.abs(data.Latitude - loc.latitude), 2)
             if (temp < dis) {
@@ -101,41 +102,47 @@ export default class mapPage extends Component {
               IDs = data.Id
               longitude = data.Longitude
               latitude = data.Latitude
-
               title = data.Title
               src = data.Video
-
+              console.log(title, IDs)
             }
-          })
+          
         })
         
         if (Math.abs(longitude - loc.longitude) <= 0.0025 && Math.abs(latitude - loc.latitude) <= 0.0025) {
-          if (this.state.curDescrPlaceId != IDs) {
-            console.log(1232131312)
-            backgroundAudioManager.title = title
-            backgroundAudioManager.src = 'https://dmsh.bupt.edu.cn/files/' + src
-            backgroundAudioManager.play()
+          console.log(title,IDs)
+          if (this.state.currentTitle != title) {
+            
+            this.backgroundAudioManager.title = title
+            this.backgroundAudioManager.src = 'https://dmsh.bupt.edu.cn/files/' + src
+            this.backgroundAudioManager.onEnded(()=>{
+              console.log(123)
+              this.backgroundAudioManager.play()
+            })
+            // this.backgroundAudioManager.play()
           }
           let tempMarkers = this.state.placeMarkers
           for (let marker of tempMarkers) {
-            if (this.state.curTypePlaces[marker.id].Id == IDs) {
+            console.log(this.state.curTypePlaces[marker.id])
+            if (this.state.curTypePlaces[marker.id].Title == title) {
               marker.iconPath = this.nearastMarkerSrc
               marker.width = "40px"
               marker.height = "40px"
             }
-            else if (this.state.curTypePlaces[marker.id].Id == this.state.curDescrPlaceId) {
+            else if (this.state.curTypePlaces[marker.id].Title == this.state.currentTitle) {
               marker.iconPath = this.normalMarkerSrc
-              marker.width = "35px"
-              marker.height = "35px"
+              marker.width = "32px"
+              marker.height = "32px"
             }
           }
           this.setState({
+            currentTitle: title,
             curDescrPlaceId: IDs,
             placeMarkers: tempMarkers
           })
         }
         else {
-          this.changeMarker(this.state.curDescrPlaceId, this.normalMarkerSrc)
+          this.changeMarker( this.normalMarkerSrc)
           this.setState({ curDescrPlaceId: -1 })
         }
       }
@@ -165,6 +172,7 @@ export default class mapPage extends Component {
       let tPlaceTypes = []
       let tPlaces = new Map()
       let tempPlaces = []
+      let desc = "-1"
       for (let tp of res.data) {
         let flag = 1
         for (let item of tPlaceTypes) {
@@ -173,15 +181,18 @@ export default class mapPage extends Component {
             break
           }
         }
-        if (flag)
+        console.log(tp.Desc == desc)
+        if (flag )
           tPlaceTypes.push({ id: tp.PlaceType["Id"], type: tp.PlaceType["Type"] })
         tempPlaces = tPlaces.get(tp.PlaceType["Id"])
         if (!tempPlaces) {
           tempPlaces = []
         }
-        tempPlaces.push(tp)
+        if (tp.Desc != desc)
+          tempPlaces.push(tp)
         tPlaces.set(tp.PlaceType["Id"], tempPlaces)
         this.setState({
+          allPlaces:res.data,
           menuHeight: 7 + res.data.length * 7,
           curTypeId: tPlaceTypes[0].id,
           places: tPlaces,
@@ -193,11 +204,15 @@ export default class mapPage extends Component {
     })
   }
   componentWillMount() {
-    Taro.getStorage({ key: 'normalMarkerSrc' }).then((res) => {
+    Taro.getStorage({ key: 'normalMarkerSrcc' }).then((res) => {
       this.normalMarkerSrc = res.data
+    },() => {
+      this.normalMarkerSrc = 'https://dmsh.bupt.edu.cn/files/simplePlace.png'
     })
     Taro.getStorage({ key: 'nearastMarkerSrc' }).then((res) => {
       this.nearastMarkerSrc = res.data
+    },() => {
+      this.nearastMarkerSrc = 'https://dmsh.bupt.edu.cn/files/ZR0fBj.png'
     })
     this.request(this.$router.params.id)
   }
@@ -231,7 +246,7 @@ export default class mapPage extends Component {
 
   componentDidShow() {
     this.descIntervalId = setInterval(this.describePlaceNearBy.bind(this), 5000)
-
+    
   }
 
   componentDidHide() { }
@@ -243,10 +258,10 @@ export default class mapPage extends Component {
     })
   }
 
-  changeMarker(id, src) {
+  changeMarker( src) {
     let tempmarkers = this.state.placeMarkers;
     for (let marker of tempmarkers) {
-      if (this.state.curTypePlaces[marker.id].Id == id) {
+      if (this.state.curTypePlaces[marker.id].Title == this.state.currentTitle) {
         marker.iconPath = src
         break
       }
