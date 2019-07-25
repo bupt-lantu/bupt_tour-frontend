@@ -91,10 +91,11 @@ export default class mapPage extends Component {
         var latitude = 10
         var title = ''
         var src = ''
+        console.log(this.state.allPlaces)
         this.state.allPlaces.forEach((data) => {
           //item 为每一个类别
           
-            console.log(data)
+            
             //data为每个类别中的每一项
             let temp = Math.pow(Math.abs(data.Longitude - loc.longitude), 2) + Math.pow(Math.abs(data.Latitude - loc.latitude), 2)
             if (temp < dis) {
@@ -115,9 +116,10 @@ export default class mapPage extends Component {
             
             this.backgroundAudioManager.title = title
             this.backgroundAudioManager.src = 'https://dmsh.bupt.edu.cn/files/' + src
-            this.backgroundAudioManager.onEnded(()=>{
+            Taro.onBackgroundAudioStop(()=>{
               console.log(123)
-              this.backgroundAudioManager.play()
+              this.backgroundAudioManager.src = ' '
+              this.backgroundAudioManager.src = 'https://dmsh.bupt.edu.cn/files/' + src
             })
             // this.backgroundAudioManager.play()
           }
