@@ -105,15 +105,14 @@ export default class mapPage extends Component {
               latitude = data.Latitude
               title = data.Title
               src = data.Video
-              console.log(title, IDs)
             }
           
         })
         
         if (Math.abs(longitude - loc.longitude) <= 0.0025 && Math.abs(latitude - loc.latitude) <= 0.0025) {
-          console.log(title,IDs)
+          
           if (this.state.currentTitle != title) {
-            
+            console.log(title,IDs)
             this.backgroundAudioManager.title = title
             this.backgroundAudioManager.src = 'https://dmsh.bupt.edu.cn/files/' + src
             Taro.onBackgroundAudioStop(()=>{
@@ -125,7 +124,6 @@ export default class mapPage extends Component {
           }
           let tempMarkers = this.state.placeMarkers
           for (let marker of tempMarkers) {
-            console.log(this.state.curTypePlaces[marker.id])
             if (this.state.curTypePlaces[marker.id].Title == title) {
               marker.iconPath = this.nearastMarkerSrc
               marker.width = "40px"
@@ -160,7 +158,7 @@ export default class mapPage extends Component {
       })
     }
     var url = " "
-    id == 1 ? url = "https://dmsh.bupt.edu.cn/xituc_v1/place?sortby=PlaceType&order=asc" : url = 'https://dmsh.bupt.edu.cn/shahe_v1/place?sortby=PlaceType&order=asc'
+    id == 1 ? url = "https://dmsh.bupt.edu.cn/xituc_v1/place?sortby=PlaceType&order=asc&limit=150" : url = 'https://dmsh.bupt.edu.cn/shahe_v1/place?sortby=PlaceType&order=asc&limit=150'
     Taro.request({
       url: url,
       header: {
@@ -251,13 +249,16 @@ export default class mapPage extends Component {
     
   }
 
-  componentDidHide() { }
+  componentDidHide() { 
+    clearInterval(this.descIntervalId)
+  }
 
   jumpToDetail(e)// call this method when select a place from the list to show details
   {
     Taro.navigateTo({
       url: '/pages/detailPage/detailPage?id=' + parseInt(e.currentTarget.id.substr(5))
     })
+    clearInterval(this.descIntervalId)
   }
 
   changeMarker( src) {
