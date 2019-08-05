@@ -1,6 +1,6 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View } from '@tarojs/components'
-import coverPic from '../../static/cover.jpg'
+import coverPic from '../../static/cover.png'
 import shahee from '../../static/shahe.png'
 export default class detailPage extends Component {
 
@@ -43,25 +43,13 @@ export default class detailPage extends Component {
 
   componentDidHide() { }
 
-  shahe() {
-    Taro.navigateTo({
-      url: '/pages/mapPage/mapPage?id=1'
-    })
-  }
 
-  benbu() {
-    Taro.navigateTo({
-      url: '/pages/mapPage/mapPage?id=2'
-    })
-  }
 
   render() {
     return (
       <View >
-        <Image src={coverPic} onClick={this.benbu} className='coverPic' />
-        {/* <Image src={benbuu} className='xituc' onClick={this.shahe}></Image> */}
-        {/* <Image src={shahee} className='shahe' onClick={this.benbu}></Image> */}
-      </View>
+          <web-view src="https://mp.weixin.qq.com/"></web-view>
+        </View>
     )
   }
 }

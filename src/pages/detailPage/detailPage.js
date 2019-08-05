@@ -38,14 +38,25 @@ export default class detailPage extends Component {
       })
     })
     let id = this.$router.params.id
-    Taro.request({
-      url: 'https://dmsh.bupt.edu.cn/shahe_v1/place/' + id,
-      header: {
-        'accept': 'application/json'
-      },
-      method: 'GET'
-    })
-      .then((res) => {
+    var url = ''
+    Taro.getStorage({ key: 'campus' }).then((res) => {
+      console.log(123412412,res)
+      if(res.data == 1) {
+        url = 'https://dmsh.bupt.edu.cn/xituc_v1/place/'
+      }
+      else {
+        url = 'https://dmsh.bupt.edu.cn/shahe_v1/place/'
+      }
+    }).then(() => {
+      console.log(1232131312)
+      console.log(url)
+      Taro.request({
+        url: url + id,
+        header: {
+          'accept': 'application/json'
+        },
+        method: 'GET'
+      }) .then((res) => {
         console.log(res)
         this.setState({
           longitude: res.data.Longitude,
@@ -61,6 +72,8 @@ export default class detailPage extends Component {
           this.audioPlaying = false
         })
       })
+    })
+     
   }
 
   componentDidMount() {

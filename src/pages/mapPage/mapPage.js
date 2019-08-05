@@ -157,6 +157,10 @@ export default class mapPage extends Component {
         longitude: this.state.benbulongitude,
       })
     }
+    Taro.setStorage({
+      key: "campus",
+      data: id
+    })
     var url = " "
     id == 1 ? url = "https://dmsh.bupt.edu.cn/xituc_v1/place?sortby=PlaceType&order=asc&limit=150" : url = 'https://dmsh.bupt.edu.cn/shahe_v1/place?sortby=PlaceType&order=asc&limit=150'
     Taro.request({
@@ -328,7 +332,11 @@ export default class mapPage extends Component {
             </CoverView>
 
             {shaheCampus &&
-              <CoverImage src={vrImage} className="vrImage"></CoverImage>
+              <CoverImage src={vrImage} className="vrImage" onClick={() => {
+                Taro.navigateTo({
+                  url:'/pages/webview/webview'
+                })
+              }}></CoverImage>
             }
             <CoverView className="locateContainer">
               <CoverImage src={locate} className="locateIcon" onClick={this.backToMyLocation}></CoverImage>
