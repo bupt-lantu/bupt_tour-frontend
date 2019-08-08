@@ -6,7 +6,10 @@ export default class detailPage extends Component {
 
   state = {}
 
-  config = {}
+  config = {
+    navigationBarTitleText: '北京邮电大学沙河校区',
+    
+  }
 
   changeDiscAudioState() { }
 

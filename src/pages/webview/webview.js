@@ -6,7 +6,7 @@ export default class detailPage extends Component {
 
   state = {}
 
-  config = {}
+
 
   changeDiscAudioState() { }
 
@@ -48,7 +48,7 @@ export default class detailPage extends Component {
   render() {
     return (
       <View >
-          <web-view src="https://mp.weixin.qq.com/"></web-view>
+          <web-view src="https://dmsh.bupt.edu.cn/vr/"></web-view>
         </View>
     )
   }

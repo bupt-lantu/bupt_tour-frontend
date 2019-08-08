@@ -48,7 +48,7 @@ export default class mapPage extends Component {
   }
 
   config = {
-    navigationBarTitleText: '大美沙河',
+    navigationBarTitleText: '沙邮智慧导览',
     disableScroll: true
   }
 
