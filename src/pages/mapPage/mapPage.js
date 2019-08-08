@@ -48,7 +48,7 @@ export default class mapPage extends Component {
   }
 
   config = {
-    navigationBarTitleText: '大美沙河',
+    navigationBarTitleText: '沙邮智慧导览',
     disableScroll: true
   }
 
@@ -91,10 +91,11 @@ export default class mapPage extends Component {
         var latitude = 10
         var title = ''
         var src = ''
+        console.log(this.state.allPlaces)
         this.state.allPlaces.forEach((data) => {
           //item 为每一个类别
           
-            console.log(data)
+            
             //data为每个类别中的每一项
             let temp = Math.pow(Math.abs(data.Longitude - loc.longitude), 2) + Math.pow(Math.abs(data.Latitude - loc.latitude), 2)
             if (temp < dis) {
@@ -104,26 +105,25 @@ export default class mapPage extends Component {
               latitude = data.Latitude
               title = data.Title
               src = data.Video
-              console.log(title, IDs)
             }
           
         })
         
         if (Math.abs(longitude - loc.longitude) <= 0.0025 && Math.abs(latitude - loc.latitude) <= 0.0025) {
-          console.log(title,IDs)
+          
           if (this.state.currentTitle != title) {
-            
+            console.log(title,IDs)
             this.backgroundAudioManager.title = title
             this.backgroundAudioManager.src = 'https://dmsh.bupt.edu.cn/files/' + src
-            this.backgroundAudioManager.onEnded(()=>{
+            Taro.onBackgroundAudioStop(()=>{
               console.log(123)
-              this.backgroundAudioManager.play()
+              this.backgroundAudioManager.src = ' '
+              this.backgroundAudioManager.src = 'https://dmsh.bupt.edu.cn/files/' + src
             })
             // this.backgroundAudioManager.play()
           }
           let tempMarkers = this.state.placeMarkers
           for (let marker of tempMarkers) {
-            console.log(this.state.curTypePlaces[marker.id])
             if (this.state.curTypePlaces[marker.id].Title == title) {
               marker.iconPath = this.nearastMarkerSrc
               marker.width = "40px"
@@ -157,8 +157,12 @@ export default class mapPage extends Component {
         longitude: this.state.benbulongitude,
       })
     }
+    Taro.setStorage({
+      key: "campus",
+      data: id
+    })
     var url = " "
-    id == 1 ? url = "https://dmsh.bupt.edu.cn/xituc_v1/place?sortby=PlaceType&order=asc" : url = 'https://dmsh.bupt.edu.cn/shahe_v1/place?sortby=PlaceType&order=asc'
+    id == 1 ? url = "https://dmsh.bupt.edu.cn/xituc_v1/place?sortby=PlaceType&order=asc&limit=150" : url = 'https://dmsh.bupt.edu.cn/shahe_v1/place?sortby=PlaceType&order=asc&limit=150'
     Taro.request({
       url: url,
       header: {
@@ -249,13 +253,16 @@ export default class mapPage extends Component {
     
   }
 
-  componentDidHide() { }
+  componentDidHide() { 
+    clearInterval(this.descIntervalId)
+  }
 
   jumpToDetail(e)// call this method when select a place from the list to show details
   {
     Taro.navigateTo({
       url: '/pages/detailPage/detailPage?id=' + parseInt(e.currentTarget.id.substr(5))
     })
+    clearInterval(this.descIntervalId)
   }
 
   changeMarker( src) {
@@ -325,7 +332,11 @@ export default class mapPage extends Component {
             </CoverView>
 
             {shaheCampus &&
-              <CoverImage src={vrImage} className="vrImage"></CoverImage>
+              <CoverImage src={vrImage} className="vrImage" onClick={() => {
+                Taro.navigateTo({
+                  url:'/pages/webview/webview'
+                })
+              }}></CoverImage>
             }
             <CoverView className="locateContainer">
               <CoverImage src={locate} className="locateIcon" onClick={this.backToMyLocation}></CoverImage>

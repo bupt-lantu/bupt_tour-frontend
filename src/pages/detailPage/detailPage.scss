@@ -33,15 +33,15 @@
 .palyerCountainer{
     display: flex;
     justify-content: center;
-    align-items: center;
-    padding:50px 40px 30px 40px; 
-}
+    align-items: center; 
+    padding:50px 40px 30px 40px;   
+} 
+ 
+  
 
-
-
-.detail{
+.detail{ 
     display: flex;
-    flex-flow: column nowrap;
+    flex-flow: column nowrap; 
     background-color: rgba(235, 235, 235, 0.3);
     
     font-size: 28px;
