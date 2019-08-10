@@ -1,15 +1,12 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View } from '@tarojs/components'
-import coverPic from '../../static/cover.jpg'
+import coverPic from '../../static/cover.png'
 import shahee from '../../static/shahe.png'
 export default class detailPage extends Component {
 
   state = {}
 
-  config = {
-    navigationBarTitleText: '北京邮电大学沙河校区',
-    
-  }
+
 
   changeDiscAudioState() { }
 
@@ -46,25 +43,13 @@ export default class detailPage extends Component {
 
   componentDidHide() { }
 
-  shahe() {
-    Taro.navigateTo({
-      url: '/pages/mapPage/mapPage?id=1'
-    })
-  }
 
-  benbu() {
-    Taro.navigateTo({
-      url: '/pages/mapPage/mapPage?id=2'
-    })
-  }
 
   render() {
     return (
       <View >
-        <Image src={coverPic} onClick={this.benbu} className='coverPic' />
-        {/* <Image src={benbuu} className='xituc' onClick={this.shahe}></Image> */}
-        {/* <Image src={shahee} className='shahe' onClick={this.benbu}></Image> */}
-      </View>
+          <web-view src="https://dmsh.bupt.edu.cn/vr/"></web-view>
+        </View>
     )
   }
 }

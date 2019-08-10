@@ -17,8 +17,8 @@
 }
 .campusDetail{
     margin:"2.5vh";
-    position:fixed;
-    top:0;
+    position:fixed; 
+    top:0; 
     left:0;
     width:200px;
     margin-left:10px;
@@ -64,8 +64,8 @@
     position: fixed;
     width:80px;
     height:80px;
-    top:45vh;
-    left:5vw;
+    top:50vh;
+    left:80vw;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -73,14 +73,19 @@
 
 .locateContainer{
     position: fixed;
-    bottom: 45vh;
-    right: 5vw;
+    bottom: 44vh;
+    left:5vw;
+    width:80px;
+    height:80px;
     background-color: white;
-    padding: 10px 15px 10px 15px;
-    border-radius: 10px;
+    // padding: 10px 15px 10px 15px;
+    border-radius: 15px;
+    // text-align:center
     .locateIcon{
-        width: 30px;
-        height: 40px;
+        padding-left:24px;
+        padding-top:19px;
+        width: 32px;
+        height: 42px;
     }
 }
 
@@ -98,8 +103,8 @@
         display: flex;
         padding: 55px 1.5vh 0.5vh 1.5vh;
         .functionSelectImage {
-            width:40px;
-            height:40px;
+            width:50px;
+            height:50px;
         }
     }
     .triangle_white{

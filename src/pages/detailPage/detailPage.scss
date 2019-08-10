@@ -8,20 +8,20 @@
 }
 .placePicture{
     width: 750px;
-    height:500px;    
-}
+    height:500px;     
+} 
 
 .navImage { 
-    height:60px; 
-    width:60px;    
-}
-.titleGroup{
-    background:white; 
-    display: flex; 
+    height:50px; 
+    width:50px;     
+}  
+.titleGroup{ 
+    background:white;   
+    display: flex;  
     flex-direction: row;  
-    align-items: center; 
-    padding: 4%;
-    height: 7vh;
+    align-items: center;   
+    padding: 4%;   
+    height: 7vh; 
 }
 
 .title{
@@ -34,13 +34,15 @@
 .palyerCountainer{
     display: flex;
     justify-content: center;
-    align-items: center;
-    padding:5vh 5vw 3vh ;
-}
+    align-items: center; 
+    padding:50px 40px 30px 40px;   
+} 
+ 
+  
 
-.detail{
+.detail{ 
     display: flex;
-    flex-flow: column nowrap;
+    flex-flow: column nowrap; 
     background-color: rgba(235, 235, 235, 0.3);
     font-size: 28px;
 }
