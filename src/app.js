@@ -14,8 +14,12 @@ class App extends Component {
   config = {
     pages: [
       'pages/index/index',
-      'pages/detailPage/detailPage',
       'pages/mapPage/mapPage',
+      
+      'pages/detailPage/detailPage',
+      
+      
+      
       'pages/webview/webview',
       
     ],
