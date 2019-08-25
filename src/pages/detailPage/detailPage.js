@@ -1,6 +1,7 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, Image, Audio } from '@tarojs/components'
 import navigationImage from '../../static/navigationImage.png'
+
 export default class detailPage extends Component {
 
   state = {
@@ -9,7 +10,7 @@ export default class detailPage extends Component {
     placePicSource: "",
     placeTitle: "",
     placeDiscription: "",
-    placeSound: "" 
+    placeSound: ""
   }
 
   config = {
@@ -40,8 +41,8 @@ export default class detailPage extends Component {
     let id = this.$router.params.id
     var url = ''
     Taro.getStorage({ key: 'campus' }).then((res) => {
-      console.log(123412412,res)
-      if(res.data == 1) {
+      console.log(123412412, res)
+      if (res.data == 1) {
         url = 'https://dmsh.bupt.edu.cn/xituc_v1/place/'
       }
       else {
@@ -56,28 +57,28 @@ export default class detailPage extends Component {
           'accept': 'application/json'
         },
         method: 'GET'
-      }) .then((res) => {
+      }).then((res) => {
         console.log(res)
         this.setState({
           longitude: res.data.Longitude,
           latitude: res.data.Latitude,
-          placePicSource: 'https://dmsh.bupt.edu.cn/files/'+res.data.Picture,
+          placePicSource: 'https://dmsh.bupt.edu.cn/files/' + res.data.Picture,
           placeTitle: res.data.Title,
           placeDiscription: res.data.Desc,
           // placeDiscription: "asjdkhlflkjashdljfhajkasjdkhlflkjashdljfhajkshdnfkjashdjkfcjzHBKxgLAAIDGUKAJEwfglIWOIEFHpasjdkhlflkjashdljfhajkshdnfkjashdjkfcjzHBKxgLAAIDGUKAJEwfglIWOIEFHpasjdkhlflkjashdljfhajkshdnfkjashdjkfcjzHBKxgLAAIDGUKAJEwfglIWOIEFHpshdnfkjashdjkfcjzHBKxgLAAIDGUKAJEwfglIWOIEFHp  ",
           placeSound: 'https://dmsh.bupt.edu.cn/files/' + res.data.Video,
-        },() => {
+        }, () => {
           this.descAudioContext = wx.createAudioContext('descPlayer')
           this.descAudioContext.src = this.state.placeSound
           this.audioPlaying = false
         })
       })
     })
-     
+
   }
 
   componentDidMount() {
-   
+
   }
 
   componentWillUnmount() { }
@@ -126,9 +127,8 @@ export default class detailPage extends Component {
             <View className="placeDiscription" >
               
                 {placeDiscription}
-              
+      
             </View>
-
           </View>
         </View>
       </View>

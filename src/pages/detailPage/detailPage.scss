@@ -4,6 +4,7 @@
     overflow-y: scroll ;
     background-color: rgba(235, 235, 235, 0.5); 
     // background-color: red;
+
 }
 .placePicture{
     width: 750px;
@@ -11,19 +12,19 @@
 } 
 
 .navImage { 
-    height:50px; 
+    height:50px;  
     width:50px;     
 }  
 .titleGroup{ 
     background:white;   
     display: flex;  
-    flex-direction: row;  
-    align-items: center;   
-    padding: 4%;   
-    height: 7vh; 
-}
+    flex-direction: row;   
+    align-items: center;    
+    padding: 4%;      
+    height: 7vh;  
+} 
 
-.title{
+.title{ 
     padding: 10px;
     width: 80%; 
     font-size: 40px;
@@ -33,8 +34,8 @@
 .palyerCountainer{
     display: flex;
     justify-content: center;
-    align-items: center; 
-    padding:50px 40px 30px 40px;   
+    align-items: center;  
+    padding:50px 40px 30px 40px;    
 } 
  
   
@@ -43,7 +44,6 @@
     display: flex;
     flex-flow: column nowrap; 
     background-color: rgba(235, 235, 235, 0.3);
-    
     font-size: 28px;
 }
 
@@ -53,8 +53,18 @@
     display: flex;
     flex-flow: column wrap;
     width:608px;
-    padding-left:70px;;
+    padding-left:70px;
     padding-top:30px;
     
+}
+
+.zongheban {
+    text-align: center;
+}
+.lantu {
+    text-align: center;
+}
+.lianhe {
+    text-align: center;
 }
 

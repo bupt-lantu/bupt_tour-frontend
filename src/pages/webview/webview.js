@@ -11,24 +11,6 @@ export default class detailPage extends Component {
   changeDiscAudioState() { }
 
   componentWillMount() {
-    Taro.downloadFile({
-      url: 'https://dmsh.bupt.edu.cn/files/ZR0fBj.png'
-    }).then((res) => {
-      console.log(res)
-      Taro.setStorage({
-        key: "nearastMarkerSrc",
-        data: res.tempFilePath
-      })
-    })
-    Taro.downloadFile({
-      url: 'https://dmsh.bupt.edu.cn/files/simplePlace.png'
-    }).then((res) => {
-      console.log(res)
-      Taro.setStorage({
-        key: "normalMarkerSrc",
-        data: res.tempFilePath
-      })
-    })
   }
 
   componentDidMount() {
@@ -49,6 +31,7 @@ export default class detailPage extends Component {
     return (
       <View >
           <web-view src="https://dmsh.bupt.edu.cn/vr/"></web-view>
+          {/* <web-view src="https://www.baidu.com"></web-view> */}
         </View>
     )
   }

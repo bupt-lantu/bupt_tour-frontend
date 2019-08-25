@@ -1,18 +1,20 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text, ScrollView, Block, Button, CoverImage } from '@tarojs/components'
 import './mapPage.scss';
-// import jiazizhong from '../../static/jiazizhong.png'
+import locationplay from '../../static/bujiang.png'
+import locationpause from '../../static/jiang.png'
 import triangleWhite from '../../static/triangleWhite.png'
 import navigationImage from '../../static/navigationImage.png'
 import functionSelect from '../../static/functionSelect.png'
 import vrImage from '../../static/vr.png'
 import locate from '../../static/location.png'
-
 export default class mapPage extends Component {
 
   constructor(props) {
     super(props)
     this.state = {
+      flag:0,
+      explain: false,
       functionClose: true,
       menuHeight: 10,
       open: false,
@@ -43,7 +45,9 @@ export default class mapPage extends Component {
       longitude: 116.288179,
       entryId: 100000,
       topBarheight: 400,
-      currentTitle:"",
+      currentTitle: "",
+      src: "",
+      title:""
     }
   }
 
@@ -82,46 +86,60 @@ export default class mapPage extends Component {
   }
   backgroundAudioManager = Taro.getBackgroundAudioManager()
   describePlaceNearBy() {
-    
+
     wx.getLocation({
       type: 'gcj02', success: (loc) => {
+        var cixiao = 1000
         var dis = 10000
         var IDs = 10000
         var longitude = 10
         var latitude = 10
         var title = ''
         var src = ''
-        console.log(this.state.allPlaces)
-        this.state.allPlaces.forEach((data) => {
-          //item 为每一个类别
-          
-            
-            //data为每个类别中的每一项
-            let temp = Math.pow(Math.abs(data.Longitude - loc.longitude), 2) + Math.pow(Math.abs(data.Latitude - loc.latitude), 2)
-            if (temp < dis) {
-              dis = temp
-              IDs = data.Id
-              longitude = data.Longitude
-              latitude = data.Latitude
-              title = data.Title
-              src = data.Video
-            }
-          
-        })
         
-        if (Math.abs(longitude - loc.longitude) <= 0.0025 && Math.abs(latitude - loc.latitude) <= 0.0025) {
-          
+        this.state.allPlaces.forEach((data) => {
+          //data为每个类别中的每一项
+          let temp = Math.pow(Math.abs(data.Longitude - loc.longitude), 2) + Math.pow(Math.abs(data.Latitude - loc.latitude), 2)
+          if (temp < dis) {
+            cixiao = dis
+            dis = temp
+            IDs = data.Id
+            longitude = data.Longitude
+            latitude = data.Latitude
+            title = data.Title
+            src = data.Video
+          }
+        })
+
+        if (Math.abs(longitude - loc.longitude) <= 0.0025 && Math.abs(latitude - loc.latitude) <= 0.0025 && (cixiao - dis) > 1.5e-8 && title!="-1") {
           if (this.state.currentTitle != title) {
-            console.log(title,IDs)
-            this.backgroundAudioManager.title = title
-            this.backgroundAudioManager.src = 'https://dmsh.bupt.edu.cn/files/' + src
-            Taro.onBackgroundAudioStop(()=>{
-              console.log(123)
-              this.backgroundAudioManager.src = ' '
-              this.backgroundAudioManager.src = 'https://dmsh.bupt.edu.cn/files/' + src
-            })
+            console.log(title, IDs)
+            
+            if (this.state.flag) {
+              this.backgroundAudioManager.stop()
+            }
+            if (this.state.explain) {
+              setTimeout(() => {
+                this.backgroundAudioManager.title = title
+                this.backgroundAudioManager.src = "https://dmsh.bupt.edu.cn/files/" + src
+                this.setState({
+                  flag:true
+                }) 
+                // this.backgroundAudioManager.play()
+              }, 1000)
+            }
+
+            // Taro.onBackgroundAudioStop(() => {
+            //   if (this.state.explain) {
+            //     setTimeout(() => {
+            //       this.backgroundAudioManager.play()
+            //     }, 1000)
+            //   }
+            //   // this.backgroundAudioManager.src = 'https://dmsh.bupt.edu.cn/files/' + src
+            // })
             // this.backgroundAudioManager.play()
           }
+
           let tempMarkers = this.state.placeMarkers
           for (let marker of tempMarkers) {
             if (this.state.curTypePlaces[marker.id].Title == title) {
@@ -138,11 +156,13 @@ export default class mapPage extends Component {
           this.setState({
             currentTitle: title,
             curDescrPlaceId: IDs,
-            placeMarkers: tempMarkers
+            placeMarkers: tempMarkers,
+            src: src,
+            title:title
           })
         }
         else {
-          this.changeMarker( this.normalMarkerSrc)
+          this.changeMarker(this.normalMarkerSrc)
           this.setState({ curDescrPlaceId: -1 })
         }
       }
@@ -167,26 +187,26 @@ export default class mapPage extends Component {
       url: url,
       header: {
         'accept': 'application/json',
-        
+
       },
       method: 'GET',
       sortby: 'PlaceType'
     }).then(res => {
-      console.log(res)
       let tPlaceTypes = []
       let tPlaces = new Map()
       let tempPlaces = []
       let desc = "-1"
+    
       for (let tp of res.data) {
         let flag = 1
+        
         for (let item of tPlaceTypes) {
           if (item.id == tp.PlaceType["Id"]) {
             flag = 0
             break
           }
         }
-        console.log(tp.Desc == desc)
-        if (flag )
+        if (flag)
           tPlaceTypes.push({ id: tp.PlaceType["Id"], type: tp.PlaceType["Type"] })
         tempPlaces = tPlaces.get(tp.PlaceType["Id"])
         if (!tempPlaces) {
@@ -196,7 +216,7 @@ export default class mapPage extends Component {
           tempPlaces.push(tp)
         tPlaces.set(tp.PlaceType["Id"], tempPlaces)
         this.setState({
-          allPlaces:res.data,
+          allPlaces: res.data,
           menuHeight: 7 + res.data.length * 7,
           curTypeId: tPlaceTypes[0].id,
           places: tPlaces,
@@ -210,12 +230,12 @@ export default class mapPage extends Component {
   componentWillMount() {
     Taro.getStorage({ key: 'normalMarkerSrcc' }).then((res) => {
       this.normalMarkerSrc = res.data
-    },() => {
+    }, () => {
       this.normalMarkerSrc = 'https://dmsh.bupt.edu.cn/files/simplePlace.png'
     })
     Taro.getStorage({ key: 'nearastMarkerSrc' }).then((res) => {
       this.nearastMarkerSrc = res.data
-    },() => {
+    }, () => {
       this.nearastMarkerSrc = 'https://dmsh.bupt.edu.cn/files/ZR0fBj.png'
     })
     this.request(this.$router.params.id)
@@ -224,9 +244,8 @@ export default class mapPage extends Component {
   mpContext = null
   componentDidMount() {
     this.mpContext = wx.createMapContext('map')
-    console.log(this.mpContext)
     Taro.getSystemInfo().then((res) => {
-      let topheight = res.windowHeight * 0.6
+      let topheight = res.windowHeight * 0.6 
       let topBarheight = topheight - 35
       if (res.model.search('iPhone X') == -1) {
         var bottomheight = res.windowHeight * 0.4 - 47
@@ -249,11 +268,11 @@ export default class mapPage extends Component {
   }
 
   componentDidShow() {
-    this.descIntervalId = setInterval(this.describePlaceNearBy.bind(this), 5000)
-    
+    this.descIntervalId = setInterval(this.describePlaceNearBy.bind(this), 1000)
+
   }
 
-  componentDidHide() { 
+  componentDidHide() {
     clearInterval(this.descIntervalId)
   }
 
@@ -265,7 +284,7 @@ export default class mapPage extends Component {
     clearInterval(this.descIntervalId)
   }
 
-  changeMarker( src) {
+  changeMarker(src) {
     let tempmarkers = this.state.placeMarkers;
     for (let marker of tempmarkers) {
       if (this.state.curTypePlaces[marker.id].Title == this.state.currentTitle) {
@@ -310,6 +329,40 @@ export default class mapPage extends Component {
       this.mpContext.moveToLocation()
     })
   }
+  explain() {
+    this.setState({
+      explain: !this.state.explain
+    }, () => {
+      if (!this.state.explain) {
+        if (this.backgroundAudioManager.src) { 
+          this.backgroundAudioManager.stop() }
+        Taro.showToast({
+          title: '关闭智慧导览',
+          icon: 'none',
+          duration: 1000
+        })
+      }
+      else {
+        Taro.setKeepScreenOn({
+          keepScreenOn: true
+        })
+        Taro.showToast({
+          title: '开启智慧导览，请保持屏幕常亮',
+          icon: 'none',
+          duration: 1000
+        })
+        if (this.state.src != "" ) {
+          this.backgroundAudioManager.title = this.state.title
+          this.backgroundAudioManager.src = "https://dmsh.bupt.edu.cn/files/" + this.state.src
+          this.backgroundAudioManager.play()
+          this.setState({
+            flag:true
+          }) 
+        }
+      }
+    })
+
+  }
   render() {
     return (
       <View>
@@ -334,17 +387,24 @@ export default class mapPage extends Component {
             {shaheCampus &&
               <CoverImage src={vrImage} className="vrImage" onClick={() => {
                 Taro.navigateTo({
-                  url:'/pages/webview/webview'
+                  url: '/pages/webview/webview'
                 })
               }}></CoverImage>
             }
+            <CoverView className="explainContainer">
+              {explain
+                ? <CoverImage src={locationpause} className="explain" onClick={this.explain}></CoverImage>
+                : <CoverImage src={locationplay} className="explain" onClick={this.explain}></CoverImage>
+              }
+            </CoverView>
+
             <CoverView className="locateContainer">
               <CoverImage src={locate} className="locateIcon" onClick={this.backToMyLocation}></CoverImage>
             </CoverView>
           </Map>
         </View>
 
-       <ScrollView scrollIntoView={toView} scrollWithAnimation="true" scrollY="true" style={{ position: "fixed", height: '40vh', bottom: 0, borderTop: "solid 2rpx lightgray" }}>
+        <ScrollView scrollIntoView={toView} scrollWithAnimation="true" scrollY="true" style={{ position: "fixed", height: '35vh', bottom: '5vh', borderTop: "solid 2rpx lightgray" }}>
           {this.state.curTypePlaces.map((detail, index) => {
             return (
               <View className={this.state.entryId == index ? "detailGroupActive" : "detailGroup"} >
@@ -353,10 +413,19 @@ export default class mapPage extends Component {
                   <View className="placeTitle" >{detail.Title}</View>
                 </View>
                 <Image className="navigationImage" src={navigationImage} onClick={this.navigate.bind(this, index)}></Image>
+
               </View>
             )
           })}
         </ScrollView>
+        <View className="notation">
+          <View>
+          运营管理：北京邮电大学沙河校区综合办
+          </View>
+          <View>
+          技术支持：北京邮电大学计算机学院团委科创实践部（蓝图创协）
+          </View>
+        </View>
       </View>
     )
   }

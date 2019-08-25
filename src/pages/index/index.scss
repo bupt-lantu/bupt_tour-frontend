@@ -5,6 +5,7 @@
     top: 0;
     left: 0;
     z-index: -1000;
+    
 }
  
 // .xituc {
@@ -12,15 +13,34 @@
 //     position:fixed;
 //     width:180px;
 //     height:180px;
-//     margin-top:30.5vh;
-//     margin-left:38vw;   
+//     margin-top:30.5vh; 
+//     margin-left:38vw;    
 // }  
      
 .shahe {
     width:300px; 
     height:300px;  
-    margin-top:5vh; 
-    margin-left:30vw;
-    z-index:1000;   
-    position:fixed; 
+    margin-top:6vh;     
+    margin-left:30vw; 
+    z-index:1000;    
+    position:fixed;   
+}  
+
+.zongheban {
+    position: relative;
+    top:80vh;
+    
+    text-align: center;
+}
+.lantu {
+    position: relative;
+    top:81vh;
+    
+    text-align: center;
+}
+.lianhe {
+    position: relative;
+    top:82vh;
+    
+    text-align: center;
 }
