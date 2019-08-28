@@ -41,8 +41,8 @@ export default class mapPage extends Component {
       shahelongitude: 116.288179,
       benbulatitude: 39.961370,
       benbulongitude: 116.35826,
-      latitude: 40.159113,
-      longitude: 116.288179,
+      latitude: 39.96137,
+      longitude: 116.35826,
       entryId: 100000,
       topBarheight: 400,
       currentTitle: "",
@@ -181,8 +181,8 @@ export default class mapPage extends Component {
       key: "campus",
       data: id
     })
-    var url = " "
-    id == 1 ? url = "https://dmsh.bupt.edu.cn/xituc_v1/place?sortby=PlaceType&order=asc&limit=150" : url = 'https://dmsh.bupt.edu.cn/shahe_v1/place?sortby=PlaceType&order=asc&limit=150'
+    var url = "https://dmsh.bupt.edu.cn/xituc_v1/place?sortby=PlaceType&order=asc&limit=150 "
+    // id == 1 ? url = "https://dmsh.bupt.edu.cn/xituc_v1/place?sortby=PlaceType&order=asc&limit=150" : url = 'https://dmsh.bupt.edu.cn/shahe_v1/place?sortby=PlaceType&order=asc&limit=150'
     Taro.request({
       url: url,
       header: {
@@ -268,7 +268,7 @@ export default class mapPage extends Component {
   }
 
   componentDidShow() {
-    this.descIntervalId = setInterval(this.describePlaceNearBy.bind(this), 1000)
+    // this.descIntervalId = setInterval(this.describePlaceNearBy.bind(this), 1000)
 
   }
 
@@ -368,7 +368,7 @@ export default class mapPage extends Component {
       <View>
         <View className="top">
           <Map className="Map" latitude={latitude} longitude={longitude} id='map' show-location markers={this.state.placeMarkers} onmarkertap={this.onMarkSelected} style={"height:" + topHeight + "px"} >
-            <CoverView className="campusTitle">{shaheCampus ? '沙河校区' : '西土城校区'}</CoverView>
+            <CoverView className="campusTitle">{shaheCampus ? '西土城校区' : '沙河校区'}</CoverView>
             <CoverView className="rightBar">
               <CoverView className="selectContainer" onClick={this.changeFunctionClose}>
                 <CoverImage src={functionSelect} className="functionSelectImage" ></CoverImage>
@@ -384,19 +384,19 @@ export default class mapPage extends Component {
                 </CoverView>)}
             </CoverView>
 
-            {shaheCampus &&
+            {/* {shaheCampus &&
               <CoverImage src={vrImage} className="vrImage" onClick={() => {
                 Taro.navigateTo({
                   url: '/pages/webview/webview'
                 })
               }}></CoverImage>
-            }
-            <CoverView className="explainContainer">
+            } */}
+            {/* <CoverView className="explainContainer">
               {explain
                 ? <CoverImage src={locationpause} className="explain" onClick={this.explain}></CoverImage>
                 : <CoverImage src={locationplay} className="explain" onClick={this.explain}></CoverImage>
               }
-            </CoverView>
+            </CoverView> */}
 
             <CoverView className="locateContainer">
               <CoverImage src={locate} className="locateIcon" onClick={this.backToMyLocation}></CoverImage>
@@ -404,9 +404,9 @@ export default class mapPage extends Component {
           </Map>
         </View>
 
-        <ScrollView scrollIntoView={toView} scrollWithAnimation="true" scrollY="true" style={{ position: "fixed", height: '35vh', bottom: '5vh', borderTop: "solid 2rpx lightgray" }}>
+        <ScrollView scrollIntoView={toView} scrollWithAnimation="true" scrollY="true" style={{ position: "fixed", height: '37vh', bottom: '3vh', borderTop: "solid 2rpx lightgray" }}>
           {this.state.curTypePlaces.map((detail, index) => {
-            return (
+            return ( 
               <View className={this.state.entryId == index ? "detailGroupActive" : "detailGroup"} >
                 <View className="placePicHolder" id={"place" + detail.Id} onClick={this.jumpToDetail}>
                   <Image className="placePic" src={"https://dmsh.bupt.edu.cn/files/" + detail.Picture} />
@@ -419,9 +419,9 @@ export default class mapPage extends Component {
           })}
         </ScrollView>
         <View className="notation">
-          <View>
+          {/* <View>
           运营管理：北京邮电大学沙河校区综合办
-          </View>
+          </View> */}
           <View>
           技术支持：北京邮电大学计算机学院团委科创实践部（蓝图创协）
           </View>

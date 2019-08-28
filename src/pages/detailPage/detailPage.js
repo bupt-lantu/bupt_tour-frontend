@@ -42,7 +42,7 @@ export default class detailPage extends Component {
     var url = ''
     Taro.getStorage({ key: 'campus' }).then((res) => {
       console.log(123412412, res)
-      if (res.data == 1) {
+      if (res.data != 1) {
         url = 'https://dmsh.bupt.edu.cn/xituc_v1/place/'
       }
       else {
